@@ -12,7 +12,7 @@ import Solicitacao from './opcoesMenu/Solicitacao.jsx';
 //import AppChat from './chat-app/src/AppChat.jsx'  
 import { ChakraProvider } from "@chakra-ui/react";
 import HomeAdmParque from './routes/HomeAdmParque.jsx';
-//import AppChat from './chat-app/src/AppChat.jsx'
+import AppChat from './chat-app/src/AppChat.jsx'
 
 
 const router = createBrowserRouter([
@@ -50,6 +50,10 @@ const router = createBrowserRouter([
         {
           path: "/homeadmparque",
           element: <HomeAdmParque />,
+        },
+        {
+          path: "/chat",
+          element: <AppChat />,
         },
         //{
           //path: "/chat",
