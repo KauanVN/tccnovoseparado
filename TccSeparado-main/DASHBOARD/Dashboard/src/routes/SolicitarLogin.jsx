@@ -110,7 +110,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                   <div className="INPUT_CONTAINER_STYLE"> 
                     <FaTree className="ICON_STYLE" /> {/* Ícone da árvore */}
                     <select
-                      className="INPUT_STYLE" 
+                      className="INPUT_STYLEE" 
                       name="parque"
                       value={formData.parque}
                       onChange={handleInputChange}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { BsGrid1X2Fill, BsFillArchiveFill, BsPeopleFill, BsListCheck, BsMenuButtonWideFill, BsFillGearFill, BsFileEarmarkText } from 'react-icons/bs';
+import { BsGrid1X2Fill, BsFillArchiveFill, BsPeopleFill, BsListCheck, BsMenuButtonWideFill, BsBoxArrowRight, BsFillGearFill, BsFileText } from 'react-icons/bs'; // Substituí BsFileEarmarkText por BsFileText
 import { FaTree } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
@@ -23,7 +23,10 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   };
 
   const handleLogout = () => {
-    window.location.href = 'http://localhost:5173/';
+    const confirmLogout = window.confirm('Deseja realmente Deslogar?');
+    if (confirmLogout) {
+      window.location.href = 'http://localhost:5173/';
+    }
   };
 
   return (
@@ -42,13 +45,13 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           <BsGrid1X2Fill color="#fff" className="icon" /> Dashboard
         </li>
         <li className="sidebar-list-item" onClick={openParque}>
-          <FaTree color="#fff" className="icon" /> Parques
+        <FaTree color="#fff" className="icon" /> Parques
         </li>
         <li className="sidebar-list-item" onClick={openUsuario}>
           <BsPeopleFill color="#fff" className="icon" /> Usuário
         </li>
         <li className="sidebar-list-item" onClick={openSolicitacao}>
-          <BsFileEarmarkText color="#fff" className="icon" /> Solicitações
+          <BsFileText color="#fff" className="icon" /> Solicitações
         </li>
         <li className="sidebar-list-item">
           <BsListCheck color="#fff" className="icon" /> Inventory
@@ -57,7 +60,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           <BsMenuButtonWideFill color="#fff" className="icon" /> Chat
         </li>
         <li className="sidebar-list-item" onClick={handleLogout}>
-          <BsFillGearFill color="#fff" className="icon" /> Deslogar
+          <BsBoxArrowRight color="#fff" className="icon" /> Sair
         </li>
       </ul>
     </aside>

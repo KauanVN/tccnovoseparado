@@ -219,7 +219,7 @@ function Parque({ data, handleDeleteParque }) {
 
       <main className='main-container'>
         <div className='main-title'>
-            <h3>PARQUES</h3>
+            <h3>Parques</h3>
         </div>
 
         {isOpen && (

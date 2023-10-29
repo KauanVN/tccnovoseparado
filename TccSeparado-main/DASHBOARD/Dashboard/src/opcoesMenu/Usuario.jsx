@@ -107,7 +107,7 @@ function Usuario({ data, handleEditUsuario, handleDeleteUsuario }) {
 
       <main className='main-container'>
         <div className='main-title'>
-            <h3>USUARIOS</h3>
+            <h3>Usuários</h3>
         </div>
 
         <div className="tamanhoTabela">

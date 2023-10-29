@@ -144,17 +144,33 @@
   color: #00ffbf;
 }
 
-.botaoNovoCadastro {
+/*.botaoNovoCadastro {
   background-color: #0D5B38;
   color: rgb(252, 252, 252);
   border: none;
-  padding: 5px 5px;
   border-radius: 10px;
   cursor: pointer;
   position: absolute;
   top: 0;
   margin-top: 90px;
   margin-left: 700px;
+}*/
+.botaoNovoCadastro {
+  background-color: #0D5B38;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px; /* Aumentei o padding para tornar o botão mais espaçoso */
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  margin-top: 90px;
+  margin-left: 700px;
+  right: 1500px; /* Centralizei o botão no canto superior direito */
+}
+
+.botaoNovoCadastro:hover {
+  background-color: #0a472e; /* Cor quando o cursor está sobre o botão */
 }
 
 .botaoNovoCadastro:hover {
