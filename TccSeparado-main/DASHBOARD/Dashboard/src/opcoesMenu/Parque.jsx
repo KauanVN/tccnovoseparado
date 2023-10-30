@@ -1,7 +1,6 @@
 import React,{useState,useEffect} from "react";
 import {
   useDisclosure,
-  Heading,
   Table,
   Thead,
   Tr,
@@ -10,11 +9,10 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import "../css/HomeAdm.css"
-import ModalComp from "./ModalComp";
 import swal from "sweetalert"
 import Header from "../Header";
 import Sidebar from "../Sidebar";
+import ModalComp from "./ModalComp";
 
 
 function Parque({ data, handleDeleteParque }) {
@@ -26,6 +24,8 @@ function Parque({ data, handleDeleteParque }) {
   const [showSolicitacao, setShowSolicitacao] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dados, setDados] = useState([]);
+
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
   
   async function handleAddItem(novoItem) {
     if (showParque) {
@@ -118,7 +118,7 @@ function Parque({ data, handleDeleteParque }) {
     setDataEdit(parque); // Define os dados do parque que você deseja editar
   };
 
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
+
   console.log(administrador)
 
   async function buscarParques() {

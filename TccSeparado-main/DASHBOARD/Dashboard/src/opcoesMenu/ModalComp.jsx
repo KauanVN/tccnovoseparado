@@ -1,23 +1,25 @@
+import React, { useState } from 'react';
 import {
   Modal,
   ModalOverlay,
   ModalContent,
   ModalHeader,
-  ModalFooter,
-  ModalBody,
   ModalCloseButton,
-  Button,
+  ModalBody,
+  ModalFooter,
   FormControl,
   FormLabel,
   Input,
+  Textarea,
   Box,
   Select,
+  Button,
   Image,
-  Textarea,
-} from "@chakra-ui/react";
-import { useState, useEffect } from "react";
+} from '@chakra-ui/react';
 
-const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
+import { useEffect } from "react";
+
+const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   const [id, getId] = useState(dataEdit.id || "");
   const [nome, setNome] = useState(dataEdit.nome || "");
   const [descricao, setDescricao] = useState(dataEdit.descricao || "");
@@ -92,115 +94,115 @@ const ModalComp = ({ data, setData, dataEdit, isOpen, onClose }) => {
       }
     onClose();
   };
-
-
   return (
-    <>
-      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
-        <ModalOverlay />
-        <ModalContent
-          bg="rgba(255, 255, 255, 0.1)"
-          backdropFilter="blur(5px)"
-          zIndex="999"
-          color="white"
-          borderRadius="10px"
-        >
-          <ModalHeader>Cadastrar área de lazer</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <FormControl display="flex" flexDir="column" gap={4}>
-              <Box>
-                <FormLabel>ID</FormLabel>
-                <Input type="text" 
-                value={id} isReadOnly 
-                onChange={(e) => getId(e.target.value)} />
+    <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+      <ModalOverlay />
+      <ModalContent
+        bg="rgba(255, 255, 255, 0.1)"
+        backdropFilter="blur(5px)"
+        zIndex="999"
+        color="white"
+        borderRadius="10px"
+      >
+        <ModalHeader>Cadastrar área de lazer</ModalHeader>
+        <ModalCloseButton />
+        <ModalBody>
+          <FormControl display="flex" flexDir="column" gap={4}>
+            <Box>
+              <FormLabel>ID</FormLabel>
+              <Input
+                type="text"
+                value={id}
+                isReadOnly
+                onChange={(e) => getId(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Nome</FormLabel>
+              <Input
+                type="text"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Descrição</FormLabel>
+              <Textarea
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Endereço</FormLabel>
+              <Input
+                type="text"
+                value={endereco}
+                onChange={(e) => setEndereco(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Latitude</FormLabel>
+              <Input
+                type="text"
+                value={latitude}
+                onChange={(e) => setLatitude(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Longitude</FormLabel>
+              <Input
+                type="text"
+                value={longetude}
+                onChange={(e) => setLongitude(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Categoria</FormLabel>
+              <Input
+                type="text"
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>Adm</FormLabel>
+              <Select
+                value={admin}
+                onChange={(e) => setAdmin(e.target.value)}
+                borderRadius="5px"
+                bg="rgba(255, 255, 255, 0.3)"
+                color="black"
+              >
+                <option value="Sim" style={{ backgroundColor: 'transparent' }}>
+                  Sim
+                </option>
+                <option value="Não" style={{ backgroundColor: 'transparent' }}>
+                  Não
+                </option>
+              </Select>
+            </Box>
+            <Box>
+              <FormLabel>Selecione a imagem do Parque</FormLabel>
+              <Input type="file" accept="image/*" onChange={handleImageChange} />
+            </Box>
+            <Box>
+              {selectedImage && (
+                <Image src={selectedImage} maxH="200px" alt="Imagem" />
+              )}
+            </Box>
+          </FormControl>
+        </ModalBody>
 
-              </Box>
-              <Box>
-                <FormLabel>Nome</FormLabel>
-                <Input
-                  type="text"
-                  value={nome}
-                  onChange={(e) => setNome(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Descrição</FormLabel>
-                <Textarea
-                  value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Endereço</FormLabel>
-                <Input
-                  type="text"
-                  value={endereco}
-                  onChange={(e) => setEndereco(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Latitude</FormLabel>
-                <Input
-                  type="text"
-                  value={latitude}
-                  onChange={(e) => setLatitude(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Longitude</FormLabel>
-                <Input
-                  type="text"
-                  value={longetude}
-                  onChange={(e) => setLongitude(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Categoria</FormLabel>
-                <Input
-                  type="text"
-                  value={categoria}
-                  onChange={(e) => setCategoria(e.target.value)}
-                />
-              </Box>
-              <Box>
-                <FormLabel>Adm</FormLabel>
-                <Select
-                  value={admin}
-                  onChange={(e) => setAdmin(e.target.value)}
-                  borderRadius="5px"
-                  bg="rgba(255, 255, 255, 0.3)"
-                  color="black"
-                >
-                  <option value="Sim" style={{ backgroundColor: 'transparent' }}>Sim</option>
-                  <option value="Não" style={{ backgroundColor: 'transparent' }}>Não</option>
-                </Select>
-              </Box>
-              <Box>
-                <FormLabel>Selecione a imagem do Parque</FormLabel>
-                <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                />
-              </Box>
-              <Box>
-                {selectedImage && <Image src={item.imagem} maxH="200px" alt="Imagem" />}
-              </Box>
-            </FormControl>
-          </ModalBody>
-
-          <ModalFooter justifyContent="start">
-            <Button colorScheme="green" mr={3} onClick={handleSave}>
-              SALVAR
-            </Button>
-            <Button colorScheme="red" onClick={onClose}>
-              CANCELAR
-            </Button>
-          </ModalFooter>
-        </ModalContent>
-      </Modal>
-    </>
+        <ModalFooter justifyContent="start">
+          <Button colorScheme="green" mr={3} onClick={handleSave}>
+            SALVAR
+          </Button>
+          <Button colorScheme="red" onClick={onClose}>
+            CANCELAR
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
 };
 

@@ -165,8 +165,7 @@
   position: absolute;
   top: 0;
   margin-top: 90px;
-  margin-left: 700px;
-  right: 1500px; /* Centralizei o botão no canto superior direito */
+  right: 1300px; /* Centralizei o botão no canto superior direito */
 }
 
 .botaoNovoCadastro:hover {
