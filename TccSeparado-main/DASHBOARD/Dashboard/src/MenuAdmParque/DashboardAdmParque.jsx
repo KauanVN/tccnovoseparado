@@ -6,13 +6,13 @@ import
  import 
  { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } 
  from 'recharts';
-import Sidebar from '../Sidebar';
+import SidebarAdmParque from '../SidebarAdmParque';
 import Header from '../Header';
 import '../App.css'
 
 
 
-function Dashboard() {
+function DashboardAdmParque() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
 
   const OpenSidebar = () => {
@@ -70,7 +70,7 @@ function Dashboard() {
     <>
     <div className='grid-container'>
       <Header OpenSidebar={OpenSidebar}/>
-      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
+      <SidebarAdmParque openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
 
       <main className='main-container'>
           <div className='main-title'>
@@ -80,21 +80,21 @@ function Dashboard() {
           <div className='main-cards'>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Usuários</h3>
+                      <h3>PRODUCTS</h3>
                       <BsFillArchiveFill className='card_icon'/>
                   </div>
                   <h1>300</h1>
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Acessos no aplicativo</h3>
+                      <h3>CATEGORIES</h3>
                       <BsFillGrid3X3GapFill className='card_icon'/>
                   </div>
                   <h1>12</h1>
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Downloads</h3>
+                      <h3>CUSTOMERS</h3>
                       <BsPeopleFill className='card_icon'/>
                   </div>
                   <h1>33</h1>
@@ -162,4 +162,4 @@ function Dashboard() {
   )
 }
 
-export default Dashboard
+export default DashboardAdmParque

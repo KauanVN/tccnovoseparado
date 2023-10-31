@@ -9,9 +9,11 @@ import Dashboard from './opcoesMenu/Dashboard.jsx';
 import Parque from './opcoesMenu/Parque.jsx';
 import Usuario from './opcoesMenu/Usuario.jsx';
 import Solicitacao from './opcoesMenu/Solicitacao.jsx';
+import DashboardAdmParque from './MenuAdmParque/DashboardAdmParque'
+import Eventos from './MenuAdmParque/Eventos'
+import Informacoes from './MenuAdmParque/Informacoes'
 //import AppChat from './chat-app/src/AppChat.jsx'  
 import { ChakraProvider } from "@chakra-ui/react";
-import HomeAdmParque from './routes/HomeAdmParque.jsx';
 import AppChat from './chat-app/src/AppChat.jsx'
 
 
@@ -19,10 +21,6 @@ const router = createBrowserRouter([
   {
 
     children: [
-        {
-          path: "/homeadm",
-          element: <HomeAdm />,
-        },
         {
           path: "/dashboard",
           element: <Dashboard />,
@@ -48,17 +46,21 @@ const router = createBrowserRouter([
           element: <Login />,
         },
         {
-          path: "/homeadmparque",
-          element: <HomeAdmParque />,
+          path: "/dashboardadmparque",
+          element: <DashboardAdmParque />,
+        },
+        {
+          path: "/eventos",
+          element: <Eventos />,
+        },
+        {
+          path: "/informacoes",
+          element: <Informacoes />,
         },
         {
           path: "/chat",
           element: <AppChat />,
         },
-        //{
-          //path: "/chat",
-          //element: <AppChat />,
-        //},
     ]
   },
 ])

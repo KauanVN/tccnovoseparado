@@ -20,12 +20,12 @@ import {
 import { useEffect } from "react";
 
 const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
-  const [id, getId] = useState(dataEdit.id || "");
+  const [idLazer, getIdLazer] = useState(dataEdit.idLazer || "");
   const [nome, setNome] = useState(dataEdit.nome || "");
   const [descricao, setDescricao] = useState(dataEdit.descricao || "");
   const [endereco, setEndereco] = useState(dataEdit.endereco || "");
   const [latitude, setLatitude] = useState(dataEdit.latitude || "");
-  const [longetude, setLongitude] = useState(dataEdit.longetude || "");
+  const [longetude, setLongetude] = useState(dataEdit.longetude || "");
   const [categoria, setCategoria] = useState(dataEdit.categoria || "");
   const [admin, setAdmin] = useState(dataEdit.admin || "Não");
   const [imagem, setImagem] = useState(dataEdit.imagem || "");
@@ -34,8 +34,8 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   useEffect(() => {
     if (!Object.keys(dataEdit).length) {
       // Se não houver dados de edição, calcula o próximo ID sequencial
-      const nextId = data.length > 0 ? Math.max(...data.map((item) => item.id)) + 1 : 1;
-      getId(nextId.toString());
+      const nextId = data.length > 0 ? Math.max(...data.map((item) => item.idLazer)) + 1 : 1;
+      getIdLazer(nextId.toString());
     }
   }, [data, dataEdit]);
 
@@ -54,7 +54,8 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 
 
   async function handleSave(){
-    if (!id || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria || !imagem) return;
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria || !imagem) return;
+    console.log('oi')
       try {
         const token = await administrador.token;
   
@@ -67,10 +68,10 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
           const response = await fetch(
             `https://tcc-production-e100.up.railway.app/api/lazer`,
             {
-              method: "POST",
+              method: "PUT",
               headers: headers,
               body: JSON.stringify({
-                "id": id,
+                "id": idLazer,
                 "nome": nome,
                 "descricao": descricao,
                 "endereco": endereco,
@@ -93,7 +94,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
         console.error("Erro ao excluir o usuário:", error);
       }
     onClose();
-  };
+  }
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
@@ -112,9 +113,9 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               <FormLabel>ID</FormLabel>
               <Input
                 type="text"
-                value={id}
+                value={idLazer}
                 isReadOnly
-                onChange={(e) => getId(e.target.value)}
+                onChange={(e) => getIdLazer(e.target.value)}
               />
             </Box>
             <Box>
@@ -153,7 +154,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               <Input
                 type="text"
                 value={longetude}
-                onChange={(e) => setLongitude(e.target.value)}
+                onChange={(e) => setLongetude(e.target.value)}
               />
             </Box>
             <Box>
@@ -186,8 +187,10 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               <Input type="file" accept="image/*" onChange={handleImageChange} />
             </Box>
             <Box>
-              {selectedImage && (
-                <Image src={selectedImage} maxH="200px" alt="Imagem" />
+              {imagem && (
+                <Image src={imagem} maxH="200px" alt="Imagem" 
+                onChange={(e) => setImagem(e.target.value)}
+                />
               )}
             </Box>
           </FormControl>

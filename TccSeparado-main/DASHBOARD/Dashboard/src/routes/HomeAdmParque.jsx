@@ -262,21 +262,8 @@ function HomeAdm() {
 
   return (
     <>
-      <ChakraProvider>
         <ChakraBox className="fundo">
           {/* Cabeçalho */}
-          <Flex className="header">
-            <Heading as="h1" size="xl">
-              Linked Park
-            </Heading>
-            <Flex className="usuarioAdm">
-              <img
-                className="fotoUsuarioAdm"
-                src="/assets/my-image.jpg" // Caminho relativo para a imagem
-              />
-              <Text fontWeight="bold">Nome do Usuário</Text>
-            </Flex>
-          </Flex>
 
           {/* Conteúdo */}
           <Flex>
@@ -338,7 +325,6 @@ function HomeAdm() {
                 <Usuario
                   data={dataUsuario}
                   handleEditUsuario={(usuario) => handleEditarUsuario(usuario)}
-                  handleDeleteUsuario={(id) => handleExcluirUsuario(id)}
                 />
               )}
               {showSolicitacao && (
@@ -358,7 +344,6 @@ function HomeAdm() {
           {/* Conteúdo da Página */}
           <ChakraBox>{/* Coloque seu conteúdo aqui */}</ChakraBox>
         </ChakraBox>
-      </ChakraProvider>
     </>
   );
 }

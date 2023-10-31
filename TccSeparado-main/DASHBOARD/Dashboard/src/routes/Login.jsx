@@ -55,7 +55,7 @@ export default function Login({ isOpen, setCloseLogin }) {
           navigate("/dashboard");
         } else {
           console.log("tela de adm normal");
-          navigate("/homeadmparque");
+          navigate("/dashboardadmparque");
         }
       }
     })

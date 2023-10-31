@@ -15,7 +15,7 @@ import ModalComp from "./ModalComp";
 import "../css/HomeAdm.css"
 import Header from "../Header";
 import Sidebar from "../Sidebar";
-
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons"; // Importe os ícones CheckIcon e CloseIcon
 
 
 function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
@@ -107,6 +107,26 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
         />
       </Td>
       <Td p={0}></Td>
+      <Td p={0}>
+                      <CheckIcon
+                        fontSize={20}
+                        onClick={() => {
+                          // Quando o ícone "correto" é clicado, capture os dados da linha
+                          console.log("Dados da linha (correto):", item);
+                          // Adicione a linha à lista de linhas marcadas como "correto"
+                          setLinhasCorretas([...linhasCorretas, item]);
+                        }}
+                      />
+                    </Td>
+                    <Td p={0}>
+                      <CloseIcon
+                        fontSize={20}
+                        onClick={() => {
+                          // Quando o ícone "incorreto" é clicado, exiba uma mensagem no console
+                          console.log("Ação incorreta");
+                        }}
+                      />
+                    </Td>
     </Tr>
   ))}
 </Tbody>
