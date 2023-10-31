@@ -25,6 +25,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
   const handleLogout = () => {
     const confirmLogout = window.confirm('Deseja realmente Deslogar?');
     if (confirmLogout) {
+      localStorage.clear()
       window.location.href = 'http://localhost:5173/';
     }
   };
