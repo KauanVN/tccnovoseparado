@@ -1,4 +1,4 @@
-import React,{useState,useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import {
   useDisclosure,
   Table,
@@ -9,16 +9,16 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import swal from "sweetalert"
+import swal from "sweetalert";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import ModalComp from "./ModalComp";
-
+import { CheckIcon, CloseIcon } from "@chakra-ui/icons"; // Importe os ícones CheckIcon e CloseIcon
 
 function Parque({ data, handleDeleteParque }) {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
   const [dataEdit, setDataEdit] = useState({});
-  const [dataParque, setDataParque] = useState([]); // Dados do Parque
+  const [dataParque, setDataParque] = useState([]);
   const [showParque, setShowParque] = useState(true);
   const [showUsuario, setShowUsuario] = useState(false);
   const [showSolicitacao, setShowSolicitacao] = useState(false);
@@ -26,82 +26,39 @@ function Parque({ data, handleDeleteParque }) {
   const [dados, setDados] = useState([]);
 
   var administrador = JSON.parse(localStorage.getItem("administrador"));
-  
+
+  // Defina um estado para rastrear as linhas da tabela marcadas como "correto"
+  const [linhasCorretas, setLinhasCorretas] = useState([]);
+
   async function handleAddItem(novoItem) {
     if (showParque) {
       console.log(novoItem);
       try {
         // Obtém o token do administrador
         const token = await administrador.token;
-  
+
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
             Authorization: `Bearer ${token}`,
           };
-  
-          // Faça a solicitação POST para adicionar o novo parque
+
           const response = await fetch(
             "https://tcc-production-e100.up.railway.app/api/lazer",
             {
               method: "POST",
               headers: headers,
-              body: JSON.stringify(novoItem), // O novoItem deve conter os dados do novo parque
+              body: JSON.stringify(novoItem),
             }
           );
-  
+
           if (response.status === 201) {
             const data = await response.json();
             console.log("Parque adicionado com sucesso:", data);
-  
-            // Adicione o novo parque aos dados existentes
+
             setDataParque([...dataParque, data]);
-  
-            // Feche o modal de adição após a conclusão
+
             onClose();
-            
-  async function handleAddItem(novoItem) {
-  if (showParque) {
-    console.log(novoItem);
-    try {
-      // Obtém o token do administrador
-      const token = await administrador.token;
-
-      if (token) {
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: `Bearer ${token}`,
-        };
-
-        // Faça a solicitação POST para adicionar o novo parque
-        const response = await fetch(
-          "https://tcc-production-e100.up.railway.app/api/lazer",
-          {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify(novoItem), // O novoItem deve conter os dados do novo parque
-          }
-        );
-
-        if (response.status === 201) {
-          const data = await response.json();
-          console.log("Parque adicionado com sucesso:", data);
-
-          // Adicione o novo parque aos dados existentes
-          setDataParque([...dataParque, data]);
-
-          // Feche o modal de adição após a conclusão
-          onClose();
-        } else {
-          console.error("Erro na adição do parque:", response.status);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao adicionar o parque:", error);
-    }
-  } 
-}
-
           } else {
             console.error("Erro na adição do parque:", response.status);
           }
@@ -109,25 +66,19 @@ function Parque({ data, handleDeleteParque }) {
       } catch (error) {
         console.error("Erro ao adicionar o parque:", error);
       }
-    } 
+    }
   }
 
   const handleEditParque = (parque) => {
-    // Abre a modal de edição de parque e passa os dados do parque para a modal
     onOpen();
-    setDataEdit(parque); // Define os dados do parque que você deseja editar
+    setDataEdit(parque);
   };
-
-
-  console.log(administrador)
 
   async function buscarParques() {
     try {
-  
       const token = await administrador.token;
 
       if (token) {
-     
         const headers = {
           "Content-type": "application/json; charset=UTF-8",
           Authorization: `Bearer ${token}`,
@@ -136,7 +87,7 @@ function Parque({ data, handleDeleteParque }) {
         const response = await fetch(
           "https://tcc-production-e100.up.railway.app/api/lazer",
           {
-            method: "GET", 
+            method: "GET",
             headers: headers,
           }
         );
@@ -151,12 +102,10 @@ function Parque({ data, handleDeleteParque }) {
       console.error("Erro ao fazer a solicitação:", error);
     }
   }
+
   useEffect(() => {
     buscarParques();
   }, []);
-  
-
- 
 
   async function handleExcluirParque(id) {
     swal({
@@ -186,9 +135,8 @@ function Parque({ data, handleDeleteParque }) {
               swal({
                 text: "Excluído com sucesso",
                 icon: "success",
-                button: "Ok"
+                button: "Ok",
               });
-
             } else {
               console.error("Erro na exclusão do parque:", response.status);
             }
@@ -197,131 +145,150 @@ function Parque({ data, handleDeleteParque }) {
           swal({
             text: "Erro na exclusão",
             icon: "error",
-            button: "Ok"
+            button: "Ok",
           });
         }
       }
       window.location.reload();
     });
-    console.log("id"+id)
-
+    console.log("id" + id);
   }
 
   const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle)
-  }
+    setOpenSidebarToggle(!openSidebarToggle);
+  };
 
   return (
     <>
-    <div className='grid-container'>
-      <Header OpenSidebar={OpenSidebar}/>
-      <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
+      <div className="grid-container">
+        <Header OpenSidebar={OpenSidebar} />
+        <Sidebar openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
 
-      <main className='main-container'>
-        <div className='main-title'>
+        <main className="main-container">
+          <div className="main-title">
             <h3>Parques</h3>
-            <button
-                className="botaoNovoCadastro"
-                onClick={() => {
-                  onOpen();
-                }}
-              >
-                NOVO CADASTRO
-            </button>
-        </div>
+          </div>
 
-        {isOpen && (
-                showParque ? (
-                  <ModalComp
-                    isOpen={isOpen}
-                    onClose={onClose}
-                    data={dataParque}
-                    setData={setDataParque}
-                    dataEdit={dataEdit}
-                    setDataEdit={setDataEdit}
-                    handleAddItem={handleAddItem}
-                  />
-                ) : (
-                  showUsuario ? (
-                    <ModalCompUsuario
-                      isOpen={isOpen}
-                      onClose={onClose}
-                      data={dataUsuario}
-                      setData={setDataUsuario}
-                      dataEdit={dataEdit}
-                      setDataEdit={setDataEdit}
-                      handleAddItem={handleAddItem}
-                    />
-                  ) : (
-                    <ModalCompSolicitacao
-                      isOpen={isOpen}
-                      onClose={onClose}
-                      data={dataSolicitacao}
-                      setData={setDataSolicitacao}
-                      dataEdit={dataEdit}
-                      setDataEdit={setDataEdit}
-                      handleAddItem={handleAddItem}
-                    />
-                  )
-                )
-              )}
+          {isOpen && (
+            showParque ? (
+              <ModalComp
+                isOpen={isOpen}
+                onClose={onClose}
+                data={dataParque}
+                setData={setDataParque}
+                dataEdit={dataEdit}
+                setDataEdit={setDataEdit}
+                handleAddItem={handleAddItem}
+              />
+            ) : (
+              showUsuario ? (
+                <ModalCompUsuario
+                  isOpen={isOpen}
+                  onClose={onClose}
+                  data={dataUsuario}
+                  setData={setDataUsuario}
+                  dataEdit={dataEdit}
+                  setDataEdit={setDataEdit}
+                  handleAddItem={handleAddItem}
+                />
+              ) : (
+                <ModalCompSolicitacao
+                  isOpen={isOpen}
+                  onClose={onClose}
+                  data={dataSolicitacao}
+                  setData={setDataSolicitacao}
+                  dataEdit={dataEdit}
+                  setDataEdit={setDataEdit}
+                  handleAddItem={handleAddItem}
+                />
+              )
+            )
+          )}
 
-      <div className="tamanhoTabela">
-        <Table className="tabela">
-          <Thead>
-            <Tr>
-              <Th>ID</Th>
-              <Th>Nome</Th>
-              <Th>Descrição</Th>
-              <Th>Endereço</Th>
-              <Th>Latitude</Th>
-              <Th>Longitude</Th>
-              <Th>Categoria</Th>
-              <Th>Adm</Th>
-              <Th p={0}></Th>
-              <Th p={0}></Th>
-              <Th p={0}></Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {dados.map((item, index) => (
-              <Tr key={index} cursor="pointer">
-                <Td>{item.idLazer}</Td>
-                <Td>{item.nome}</Td>
-                <Td>{item.descricao}</Td>
-                <Td>{item.endereco}</Td>
-                <Td>{item.latitude}</Td>
-                <Td>{item.longetude}</Td>
-                <Td>{item.categoria}</Td>
-                <Td>{item.admin}</Td>
-                <Td p={0}>
-                  <EditIcon
-                    fontSize={20}
-                    onClick={() => handleEditParque(item)}
-                  />
-                </Td>
-                <Td p={0}>
-                  <DeleteIcon
-                    fontSize={20}
-                    onClick={() => handleExcluirParque(item.idLazer)}
-                  />
-                </Td>
-                <Td p={0}>
+          <button
+            className="botaoNovoCadastro"
+            onClick={() => {
+              onOpen();
+            }}
+          >
+            NOVO CADASTRO
+          </button>
+          <div className="tamanhoTabela">
+            <Table className="tabela">
+              <Thead>
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>Nome</Th>
+                  <Th>Descrição</Th>
+                  <Th>Endereço</Th>
+                  <Th>Latitude</Th>
+                  <Th>Longitude</Th>
+                  <Th>Categoria</Th>
+                  <Th>Adm</Th>
+                  <Th p={0}></Th>
+                  <Th p={0}></Th>
+                  <Th p={0}></Th>
+                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "correto" */}
+                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "incorreto" */}
+                </Tr>
+              </Thead>
+              <Tbody>
+                {dados.map((item, index) => (
+                  <Tr key={index} cursor="pointer">
+                    <Td>{item.idLazer}</Td>
+                    <Td>{item.nome}</Td>
+                    <Td>{item.descricao}</Td>
+                    <Td>{item.endereco}</Td>
+                    <Td>{item.latitude}</Td>
+                    <Td>{item.longetude}</Td>
+                    <Td>{item.categoria}</Td>
+                    <Td>{item.admin}</Td>
+                    <Td p={0}>
+                      <EditIcon
+                        fontSize={20}
+                        onClick={() => handleEditParque(item)}
+                      />
+                    </Td>
+                    <Td p={0}>
+                      <DeleteIcon
+                        fontSize={20}
+                        onClick={() => handleExcluirParque(item.idLazer)}
+                      />
+                    </Td>
+                    <Td p={0}>
                   <img
                     className="imagemParque"
                     src={item.imagem}
                     alt={`Imagem de ${item.name}`}
                   />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
+                  </Td>
+                    <Td p={0}>
+                      <CheckIcon
+                        fontSize={20}
+                        onClick={() => {
+                          // Quando o ícone "correto" é clicado, capture os dados da linha
+                          console.log("Dados da linha (correto):", item);
+                          // Adicione a linha à lista de linhas marcadas como "correto"
+                          setLinhasCorretas([...linhasCorretas, item]);
+                        }}
+                      />
+                    </Td>
+                    <Td p={0}>
+                      <CloseIcon
+                        fontSize={20}
+                        onClick={() => {
+                          // Quando o ícone "incorreto" é clicado, exiba uma mensagem no console
+                          console.log("Ação incorreta");
+                        }}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </div>
+        </main>
       </div>
-    </main>
-    </div>
-    
-      
     </>
   );
 }
