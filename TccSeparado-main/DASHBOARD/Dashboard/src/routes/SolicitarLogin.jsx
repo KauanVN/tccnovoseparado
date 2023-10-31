@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes, FaEnvelope, FaLock, FaTree } from 'react-icons/fa'; // Importe os ícones necessários do FontAwesome
 import Logo from "../img/logoLinkedParkSemFundo.png";
 import '../css/Login.css';
@@ -7,17 +7,70 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
   const [formData, setFormData] = useState({
     email: '',
     senha: '',
-    parque: '', 
+    parque: 0, 
   });
-
-  const parques = [
-    'Parque A',
-    'Parque B',
-    'Parque C',
-  ];
 
   const [isIncomplete, setIsIncomplete] = useState(false); // Adicionando estado para controle de campo incompleto
   const [mostrarSenha, setMostrarSenha] = useState(false); // Estado para controlar se a senha deve ser mostrada
+  const [dados, setDados] = useState([]);
+
+  async function buscarParques() {
+    try {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+        };
+
+        const response = await fetch(
+          "https://tcc-production-e100.up.railway.app/api/lazer",
+          {
+            method: "GET", 
+            headers: headers,
+          }
+        );
+
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("Dados da resposta: p", data);
+          setDados(data);
+        }
+      
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
+  useEffect(() => {
+    buscarParques();
+  }, []);
+
+  const Solicitarlogin = (data) => {
+    console.log(data);
+    fetch('https://tcc-production-e100.up.railway.app/api/solicitacoes', {
+      method: 'POST',
+      body: JSON.stringify({
+        "email": data.email,
+        "senha": data.senha,
+        "lazer":  {
+          "idLazer": data.parque
+      }}),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then(response => {
+      console.log(response.status)
+      if (response.status === 201) {
+        return alert('ATENÇÃO!\nEsta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login');
+        ;
+      } else {
+        return   alert('ATENÇÃO!\nA solicitação falhou tente novamente mais tarde ou verifique se este email ja foi utilizado'); 
+
+      }
+    })
+    .catch(error => {
+      console.error("Erro durante a requisição:", error);
+      alert("Erro");
+    });
+  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -38,13 +91,9 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
       setIsIncomplete(true);
     } else {
       // Aqui você pode adicionar a lógica para lidar com o envio do formulário
-      console.log('Dados do formulário:', formData);
-      // Feche a modal após o envio do formulário
+    console.log('Dados do formulário:', formData);
       setCloseModal();
-      // Exibir o alerta após o envio do formulário
-      if (window.location.href === 'http://localhost:5173/') {
-        alert('ATENÇÃO!\nEsta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login');
-      }
+      Solicitarlogin(formData)
     }
   };
 
@@ -110,15 +159,15 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                   <div className="INPUT_CONTAINER_STYLE"> 
                     <FaTree className="ICON_STYLE" /> {/* Ícone da árvore */}
                     <select
-                      className="INPUT_STYLEE" 
+                      className="INPUT_STYLE" 
                       name="parque"
                       value={formData.parque}
                       onChange={handleInputChange}
                     >
                       <option value="" disabled>Selecione um parque</option>
-                      {parques.map((parque, index) => (
-                        <option key={index} value={parque}>
-                          {parque}
+                      {dados.map((parque, index) => (
+                        <option key={index} value={parque.idLazer}>
+                          {parque.nome}
                         </option>
                       ))}
                     </select>
