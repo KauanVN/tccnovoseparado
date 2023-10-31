@@ -68,7 +68,7 @@ button {
   }
   .ICON_STYLE {
     position: absolute;
-    left: 10px;
+    left: 5px;
     top: 50%;
     transform: translateY(-50%);
     z-index: 1; /* Um valor maior para que fique na frente dos inputs */
@@ -106,7 +106,7 @@ button {
     justify-content: center;
     margin-top: -20px;
     width: 40%;
-    height: 440px;
+    height: 400px;
     background: linear-gradient(
       180deg,
       #f1ffef 0%,
@@ -212,7 +212,7 @@ button {
   .INPUT_ICON_STYLE {
     position: absolute;
     top: 50%;
-    left: 10px;
+    left: 30px;
     transform: translateY(-50%);
     color: gray;
     z-index: 1;

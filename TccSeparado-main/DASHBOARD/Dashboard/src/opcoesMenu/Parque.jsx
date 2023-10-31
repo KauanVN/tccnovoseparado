@@ -220,6 +220,14 @@ function Parque({ data, handleDeleteParque }) {
       <main className='main-container'>
         <div className='main-title'>
             <h3>Parques</h3>
+            <button
+                className="botaoNovoCadastro"
+                onClick={() => {
+                  onOpen();
+                }}
+              >
+                NOVO CADASTRO
+            </button>
         </div>
 
         {isOpen && (
@@ -257,14 +265,7 @@ function Parque({ data, handleDeleteParque }) {
                   )
                 )
               )}
-      <button
-                className="botaoNovoCadastro"
-                onClick={() => {
-                  onOpen();
-                }}
-              >
-                NOVO CADASTRO
-              </button>
+
       <div className="tamanhoTabela">
         <Table className="tabela">
           <Thead>

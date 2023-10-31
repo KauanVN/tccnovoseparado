@@ -124,7 +124,7 @@ export default function Login({ isOpen, setCloseLogin }) {
                       style={{
                         position: 'absolute',
                         top: '50%',
-                        right: '5px',
+                        right: '25px',
                         transform: 'translateY(-50%)',
                         background: 'transparent',
                         border: 'none',

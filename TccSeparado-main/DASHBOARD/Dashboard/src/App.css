@@ -127,6 +127,7 @@ body {
 
 .main-title {
   display: flex;
+  font-size: 30px;
   justify-content: space-between;
   color: black;
 }
