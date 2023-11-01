@@ -112,15 +112,6 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
-              <FormLabel>ID</FormLabel>
-              <Input
-                type="text"
-                value={idLazer}
-                isReadOnly
-                onChange={(e) => getIdLazer(e.target.value)}
-              />
-            </Box>
-            <Box>
               <FormLabel>Nome</FormLabel>
               <Input
                 type="text"

@@ -13,7 +13,11 @@ import {
   Input,
   Box,
   Textarea,
+  Select,
 } from "@chakra-ui/react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
+import { FaTimes } from "react-icons/fa"; // Ícone de fechar
 
 const ModalCompInformacoes = ({
   data,
@@ -26,11 +30,13 @@ const ModalCompInformacoes = ({
   const [id, setId] = useState("");
   const [titulo, setTitulo] = useState(dataEdit.titulo || "");
   const [descricao, setDescricao] = useState(dataEdit.descricao || "");
+  const [dataEvento, setDataEvento] = useState(dataEdit.data || new Date());
+  const [adm, setAdm] = useState(dataEdit.adm || "Sim");
 
   useEffect(() => {
-    if (!Object.keys(dataEdit).length) {
+    if (!Object.keys(dataEdit)) {
       const nextId =
-        data.length > 0 ? Math.max(...data.map((item) => item.idInformacoes)) + 1 : 1;
+        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
       setId(nextId.toString());
     }
   }, [data, dataEdit]);
@@ -43,24 +49,25 @@ const ModalCompInformacoes = ({
 
     if (Object.keys(dataEdit).length) {
       data[dataEdit.index] = {
-        idInformacoes: dataEdit.idInformacoes,
+        idEvento: dataEdit.idEvento,
         titulo,
         descricao,
-        data: dataEdit.data,
-        admin: dataEdit.admin,
+        data: dataEvento.toDateString(),
+        adm,
       };
     } else {
       const newItem = {
-        idInformacoes: id,
+        idEvento: id,
         titulo,
         descricao,
-        data: new Date().toLocaleDateString(),
-        admin: "Admin", // Defina o valor do administrador conforme necessário
+        data: dataEvento.toDateString(),
+        adm,
       };
       data.push(newItem);
     }
 
-    localStorage.setItem("cad_cliente", JSON.stringify(data));
+    console.log(newItem); // Exibe os dados no console
+
     onUpdateData([...data]);
 
     // Feche a modal após salvar
@@ -77,8 +84,14 @@ const ModalCompInformacoes = ({
         color="white"
         borderRadius="10px"
       >
-        <ModalHeader>Cadastrar Novas Informações</ModalHeader>
-        <ModalCloseButton />
+        <ModalHeader>Cadastrar uma Nova Informação</ModalHeader>
+        <ModalCloseButton
+          icon={<FaTimes />}
+          _hover={{
+            color: "red.500",
+          }}
+          onClick={onClose} // Feche a modal ao clicar no ícone do X
+        />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
@@ -86,7 +99,7 @@ const ModalCompInformacoes = ({
               <Input type="text" value={id} isReadOnly />
             </Box>
             <Box>
-              <FormLabel>Título</FormLabel>
+              <FormLabel>TÍTULO</FormLabel>
               <Input
                 type="text"
                 value={titulo}
@@ -94,11 +107,48 @@ const ModalCompInformacoes = ({
               />
             </Box>
             <Box>
-              <FormLabel>Descrição</FormLabel>
+              <FormLabel>DESCRIÇÃO</FormLabel>
               <Textarea
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}
               />
+            </Box>
+            <Box>
+              <FormLabel>DATA</FormLabel>
+              <DatePicker
+                selected={dataEvento}
+                onChange={(date) => setDataEvento(date)}
+                className="custom-datepicker"
+                placeholderText="Selecione uma data"
+                dateFormat="dd/MM/yyyy"
+                calendarClassName="calendar-background"
+                wrapperClassName="transparent-input"
+              />
+              <style>
+                {`
+                .transparent-input .react-datepicker__input-container input {
+                  background-color: rgba(255, 255, 255, 0.5);
+                  border-radius: 5px;
+                }
+              `}
+              </style>
+            </Box>
+            <Box>
+              <FormLabel>ADM</FormLabel>
+              <Select
+                value={adm}
+                onChange={(e) => setAdm(e.target.value)}
+                borderRadius="5px"
+                bg="rgba(255, 255, 255, 0.3)"
+                color="black"
+              >
+                <option value="Sim" style={{ backgroundColor: 'transparent' }}>
+                  Sim
+                </option>
+                <option value="Não" style={{ backgroundColor: 'transparent' }}>
+                  Não
+                </option>
+              </Select>
             </Box>
           </FormControl>
         </ModalBody>
