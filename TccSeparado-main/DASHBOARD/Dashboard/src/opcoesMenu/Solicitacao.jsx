@@ -29,6 +29,117 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
   const [dados, setDados] = useState([]);
   var administrador = JSON.parse(localStorage.getItem("administrador"));
   
+  async function adicionarAdm(dadosAdm){
+
+    try{
+      const token = await administrador.token
+      if (token) {
+     
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(
+          "https://tcc-production-e100.up.railway.app/api/administrador",
+          {
+            method: "POST", 
+            headers: headers,
+            body: JSON.stringify({
+              "email": dadosAdm.email,
+              "senha": dadosAdm.senha,
+              "lazer":{
+                "idLazer":dadosAdm.lazer.idLazer
+              }
+            })
+          }
+        );
+
+        if (response.status === 201) {
+          console.log(dadosAdm)
+          alert("administrador adicionado com sucesso")
+          atualizaStatus(dadosAdm)
+        
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+    }
+
+    async function atualizaStatus(dadosAdm){
+
+      try{
+        const token = await administrador.token
+        if (token) {
+       
+          const headers = {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+          };
+  
+          const response = await fetch(
+            "https://tcc-production-e100.up.railway.app/api/solicitacoes",
+            {
+              method: "PUT", 
+              headers: headers,
+              body: JSON.stringify({
+                "idSolicitacoes": dadosAdm.idSolicitacoes,
+                "email": dadosAdm.email,
+                "senha": dadosAdm.senha,
+                "status":1,
+                "lazer":  {
+                  "idLazer": dadosAdm.lazer.idLazer
+              }}),
+            }
+          );
+  
+          if (response.status === 200) {
+            window.location.reload();
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao fazer a solicitação:", error);
+      }
+      }
+
+      async function recusarSolicitacao(dadosAdm){
+
+        try{
+          const token = await administrador.token
+          if (token) {
+         
+            const headers = {
+              "Content-type": "application/json; charset=UTF-8",
+              Authorization: `Bearer ${token}`,
+            };
+    
+            const response = await fetch(
+              "https://tcc-production-e100.up.railway.app/api/solicitacoes",
+              {
+                method: "PUT", 
+                headers: headers,
+                body: JSON.stringify({
+                  "idSolicitacoes": dadosAdm.idSolicitacoes,
+                  "email": dadosAdm.email,
+                  "senha": dadosAdm.senha,
+                  "status":2,
+                  "lazer":  {
+                    "idLazer": dadosAdm.lazer.idLazer
+                }}),
+              }
+            );
+    
+            if (response.status === 200) {
+              alert("solicitacao Recusada com sucesso ")
+              window.location.reload();
+            }
+          }
+        } catch (error) {
+          console.error("Erro ao fazer a solicitação:", error);
+        }
+        }
+
   async function buscarSolicitacao() {
     try {
   
@@ -52,6 +163,7 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
         if (response.status === 200) {
           const data = await response.json();
           console.log(setDados(data))
+
         
         }
       }
@@ -83,9 +195,9 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
             <Tr>
               <Th>ID</Th>
               <Th>Email do adm</Th>
-              <Th>Senha</Th>
-              <Th>ID do parque</Th>
               <Th>Status</Th>
+              <Th>nome do parque</Th>
+              <Th>ID do parque</Th>
               <Th p={0}></Th>
               <Th p={0}></Th>
               <Th p={0}></Th>
@@ -110,21 +222,16 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
       <Td p={0}>
                       <CheckIcon
                         fontSize={20}
-                        onClick={() => {
-                          // Quando o ícone "correto" é clicado, capture os dados da linha
-                          console.log("Dados da linha (correto):", item);
-                          // Adicione a linha à lista de linhas marcadas como "correto"
-                          setLinhasCorretas([...linhasCorretas, item]);
-                        }}
+                        onClick={() => adicionarAdm(item)
+                        }
                       />
                     </Td>
                     <Td p={0}>
                       <CloseIcon
                         fontSize={20}
-                        onClick={() => {
-                          // Quando o ícone "incorreto" é clicado, exiba uma mensagem no console
-                          console.log("Ação incorreta");
-                        }}
+                        onClick={() => 
+                            recusarSolicitacao(item)
+                        }
                       />
                     </Td>
     </Tr>
@@ -141,6 +248,6 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
       
     </>
   );
-}
 
+                      }
 export default Solicitacao;

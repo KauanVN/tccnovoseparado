@@ -36,13 +36,14 @@ function Parque({ data, handleDeleteParque }) {
       try {
         // Obtém o token do administrador
         const token = await administrador.token;
+        console.log("oi")
 
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
-            Authorization: `Bearer ${token}`,
+            "Authorization": `Bearer ${token}`,
           };
-
+              
           const response = await fetch(
             "https://tcc-production-e100.up.railway.app/api/lazer",
             {
