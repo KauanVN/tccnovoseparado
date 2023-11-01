@@ -14,6 +14,7 @@ import {
   Box,
   Textarea,
   Select,
+  Image,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
@@ -33,6 +34,8 @@ const ModalCompEventos = ({
   const [dataEvento, setDataEvento] = useState(dataEdit.data || new Date());
   const [localizacao, setLocalizacao] = useState(dataEdit.localizacao || "");
   const [admin, setAdmin] = useState(dataEdit.admin || "Sim");
+  const [imagem, setImagem] = useState(dataEdit.imagem || "");
+  const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!Object.keys(dataEdit)) {
@@ -41,6 +44,17 @@ const ModalCompEventos = ({
       setId(nextId.toString());
     }
   }, [data, dataEdit]);
+
+  const handleImageChange = (item) => {
+    const file = item.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagem(item.imagem);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = () => {
     if (!nome || !descricao || !localizacao) {
@@ -162,6 +176,17 @@ const ModalCompEventos = ({
                   Não
                 </option>
               </Select>
+              <Box>
+              <FormLabel>Selecione a imagem do Evento</FormLabel>
+              <Input type="file" accept="image/*" onChange={handleImageChange} />
+            </Box>
+            <Box>
+              {imagem && (
+                <Image src={imagem} maxH="200px" alt="Imagem" 
+                onChange={(e) => setImagem(e.target.value)}
+                />
+              )}
+            </Box>
             </Box>
           </FormControl>
         </ModalBody>
