@@ -1,118 +1,106 @@
 import React, { useState, useEffect } from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
-  Button,
-  FormControl,
-  FormLabel,
-  Input,
-  Box,
-  Textarea,
+  useDisclosure,
+  Table,
+  Thead,
+  Tr,
+  Th,
+  Tbody,
+  Td,
 } from "@chakra-ui/react";
+import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
+import "../css/HomeAdm.css";
+import Header from "../Header";
+import SidebarAdmParque from "../SidebarAdmParque";
 
-const ModalCompInformacoes = ({
-  data,
-  setData,
-  dataEdit,
-  isOpen,
-  onClose,
-  onUpdateData,
-}) => {
-  const [id, setId] = useState("");
-  const [titulo, setTitulo] = useState(dataEdit.titulo || "");
-  const [descricao, setDescricao] = useState(dataEdit.descricao || "");
+
+function Informacoes({ data, handleEditEvento, handleDeleteEvento }) {
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const [dataEdit, setDataEdit] = useState({});
+  const [dados, setDados] = useState(data);
 
   useEffect(() => {
-    if (!Object.keys(dataEdit).length) {
-      const nextId =
-        data.length > 0 ? Math.max(...data.map((item) => item.idInformacoes)) + 1 : 1;
-      setId(nextId.toString());
-    }
-  }, [data, dataEdit]);
+    setDados(data);
+  }, [data]);
 
-  const handleSave = () => {
-    if (!titulo || !descricao) {
-      console.log("Campos obrigatórios não preenchidos.");
-      return;
-    }
+  const handleEditItem = (item) => {
+    setDataEdit(item);
+    onOpen();
+  };
 
-    if (Object.keys(dataEdit).length) {
-      data[dataEdit.index] = {
-        idInformacoes: dataEdit.idInformacoes,
-        titulo,
-        descricao,
-        data: dataEdit.data,
-        admin: dataEdit.admin,
-      };
-    } else {
-      const newItem = {
-        idInformacoes: id,
-        titulo,
-        descricao,
-        data: new Date().toLocaleDateString(),
-        admin: "Admin", // Defina o valor do administrador conforme necessário
-      };
-      data.push(newItem);
-    }
-
-    localStorage.setItem("cad_cliente", JSON.stringify(data));
-    onUpdateData([...data]);
-
-    // Feche a modal após salvar
-    onClose();
+  const OpenSidebar = () => {
+    setOpenSidebarToggle(!openSidebarToggle);
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
-      <ModalOverlay />
-      <ModalContent
-        bg="rgba(255, 255, 255, 0.1)"
-        backdropFilter="blur(5px)"
-        zIndex="999"
-        color="white"
-        borderRadius="10px"
-      >
-        <ModalHeader>Cadastrar Novas Informações</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody>
-          <FormControl display="flex" flexDir="column" gap={4}>
-            <Box>
-              <FormLabel>ID</FormLabel>
-              <Input type="text" value={id} isReadOnly />
-            </Box>
-            <Box>
-              <FormLabel>Título</FormLabel>
-              <Input
-                type="text"
-                value={titulo}
-                onChange={(e) => setTitulo(e.target.value)}
-              />
-            </Box>
-            <Box>
-              <FormLabel>Descrição</FormLabel>
-              <Textarea
-                value={descricao}
-                onChange={(e) => setDescricao(e.target.value)}
-              />
-            </Box>
-          </FormControl>
-        </ModalBody>
-        <ModalFooter justifyContent="start">
-          <Button colorScheme="green" mr={3} onClick={handleSave}>
-            SALVAR
-          </Button>
-          <Button colorScheme="red" onClick={onClose}>
-            CANCELAR
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  );
-};
+    <>
+      <div className="grid-container">
+        <Header OpenSidebar={OpenSidebar} />
+        <SidebarAdmParque openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
 
-export default ModalCompInformacoes;
+        <main className="main-container">
+          <div className="main-title">
+            <h3>Eventosasdas</h3>
+            <button
+              className="botaoNovoCadastro"
+              onClick={onOpen}
+            >
+              NOVO CADASTRO
+            </button>
+          </div>
+
+          <div className="tamanhoTabela">
+            <Table className="tabela">
+              <Thead>
+                <Tr>
+                  <Th>ID</Th>
+                  <Th>TÍTULO</Th>
+                  <Th>DESCRIÇÃO</Th>
+                  <Th>DATA</Th>
+                  <Th>ADM</Th>
+                  <Th p={0}></Th>
+                  <Th p={0}></Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {dados.map((item) => (
+                  <Tr key={item.id} cursor="pointer">
+                    <Td>{item.id}</Td>
+                    <Td>{item.titulo}</Td>
+                    <Td>{item.descricao}</Td>
+                    <Td>{item.data}</Td>
+                    <Td>{item.adm}</Td>
+                    <Td>
+                      <EditIcon
+                        fontSize={20}
+                        onClick={() => handleEditItem(item)}
+                      />
+                    </Td>
+                    <Td p={0}>
+                      <DeleteIcon
+                        fontSize={20}
+                        onClick={() => handleDeleteEvento(item.id)}
+                      />
+                    </Td>
+                  </Tr>
+                ))}
+              </Tbody>
+            </Table>
+          </div>
+        </main>
+      </div>
+
+      <ModalCompEventos
+        data={dados}
+        setData={setDados}
+        dataEdit={dataEdit}
+        isOpen={isOpen}
+        onClose={onClose}
+      />
+    </>
+  );
+}
+
+export default Informacoes;

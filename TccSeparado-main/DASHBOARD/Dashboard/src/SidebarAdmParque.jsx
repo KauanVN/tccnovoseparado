@@ -1,6 +1,6 @@
 import React from 'react';
-import { BsGrid1X2Fill, BsFillArchiveFill, BsPeopleFill, BsListCheck, BsMenuButtonWideFill, BsBoxArrowRight, BsFillGearFill, BsFileText } from 'react-icons/bs'; // Substituí BsFileEarmarkText por BsFileText
-import { FaTree } from 'react-icons/fa';
+import { BsGrid1X2Fill, BsPeopleFill, BsMenuButtonWideFill, BsBoxArrowRight } from 'react-icons/bs';
+import { FaTree, FaCalendarAlt, FaInfoCircle } from 'react-icons/fa'; // Ícones sugeridos para Eventos e Informações
 import { useNavigate } from 'react-router-dom';
 
 function SidebarAdmParque({ openSidebarToggle, OpenSidebar }) {
@@ -43,10 +43,10 @@ function SidebarAdmParque({ openSidebarToggle, OpenSidebar }) {
           <BsGrid1X2Fill color="#fff" className="icon" /> Dashboard
         </li>
         <li className="sidebar-list-item" onClick={openParque}>
-        <FaTree color="#fff" className="icon" /> Eventos
+          <FaCalendarAlt color="#fff" className="icon" /> Eventos
         </li>
         <li className="sidebar-list-item" onClick={openUsuario}>
-          <BsPeopleFill color="#fff" className="icon" /> Informações
+          <FaInfoCircle color="#fff" className="icon" /> Informações
         </li>
         <li className="sidebar-list-item" onClick={openChat}>
           <BsMenuButtonWideFill color="#fff" className="icon" /> Chat

@@ -54,9 +54,6 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <li className="sidebar-list-item" onClick={openSolicitacao}>
           <BsFileText color="#fff" className="icon" /> Solicitações
         </li>
-        <li className="sidebar-list-item">
-          <BsListCheck color="#fff" className="icon" /> Inventory
-        </li>
         <li className="sidebar-list-item" onClick={openChat}>
           <BsMenuButtonWideFill color="#fff" className="icon" /> Chat
         </li>

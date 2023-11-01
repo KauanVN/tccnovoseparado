@@ -102,7 +102,7 @@ export default function Login({ isOpen, setCloseLogin }) {
                   <div className="INPUT_CONTAINER_STYLE">
                     <FaUser className="INPUT_ICON_STYLE" />
                     <input
-                      className="INPUT_STYLE"
+                      className="INPUT_STYLE1"
                       type="text"
                       placeholder="Usuário"
                       name="username"
@@ -113,7 +113,7 @@ export default function Login({ isOpen, setCloseLogin }) {
                   <div className="INPUT_CONTAINER_STYLE">
                     <FaLock className="INPUT_ICON_STYLE" />
                     <input
-                      className="INPUT_STYLE"
+                      className="INPUT_STYLE1"
                       type={showPassword ? 'text' : 'password'}
                       placeholder="Senha"
                       name="password"
