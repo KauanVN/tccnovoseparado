@@ -86,9 +86,8 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
               <Th>Senha</Th>
               <Th>ID do parque</Th>
               <Th>Status</Th>
-              <Th p={0}></Th>
-              <Th p={0}></Th>
-              <Th p={0}></Th>
+              <Th>Aceitar</Th>
+              <Th>Recusar</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -98,16 +97,10 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
       <Td>{item.email }</Td>
       <Td>
         {item.status === 0 ? 'Em andamento' : item.status === 1 ? 'Aprovada' : item.status === 2 ? 'Reprovada' : 'N/D'}
-      </Td>      <Td>{item.lazer.nome}</Td>
+      </Td>      
+      <Td>{item.lazer.nome}</Td>
       <Td>{item.lazer.idLazer}</Td>
-      <Td p={0}>
-        <DeleteIcon
-          fontSize={20}
-          onClick={() => handleDeleteSolicitacao(item.solicitacao ? item.email : null)}
-        />
-      </Td>
-      <Td p={0}></Td>
-      <Td p={0}>
+                    <Td>
                       <CheckIcon
                         fontSize={20}
                         onClick={() => {
