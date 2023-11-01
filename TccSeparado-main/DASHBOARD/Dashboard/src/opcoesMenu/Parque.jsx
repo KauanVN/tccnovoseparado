@@ -115,14 +115,16 @@ function Parque({ data, handleDeleteParque }) {
     }).then(async (resposta) => {
       if (resposta) {
         try {
+       
+
           const token = await administrador.token;
 
           if (token) {
             const headers = {
               "Content-type": "application/json; charset=UTF-8",
-              Authorization: `Bearer ${token}`,
+              "Authorization": `Bearer ${token}`,
             };
-
+            console.log("oi")
             const response = await fetch(
               `https://tcc-production-e100.up.railway.app/api/lazer/${id}`,
               {
@@ -131,12 +133,13 @@ function Parque({ data, handleDeleteParque }) {
               }
             );
 
-            if (response.status === 204) {
+            if (response.status === 200) {
               swal({
                 text: "Excluído com sucesso",
                 icon: "success",
                 button: "Ok",
               });
+              window.location.reload();
             } else {
               console.error("Erro na exclusão do parque:", response.status);
             }
@@ -149,7 +152,7 @@ function Parque({ data, handleDeleteParque }) {
           });
         }
       }
-      window.location.reload();
+     
     });
     console.log("id" + id);
   }
