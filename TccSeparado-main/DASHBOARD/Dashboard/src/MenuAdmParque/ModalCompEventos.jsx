@@ -45,12 +45,12 @@ const ModalCompEventos = ({
     }
   }, [data, dataEdit]);
 
-  const handleImageChange = (item) => {
-    const file = item.target.files[0];
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagem(item.imagem);
+        setImagem(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -70,6 +70,7 @@ const ModalCompEventos = ({
         data: dataEvento.toDateString(),
         localizacao,
         admin,
+        imagem,
       };
     } else {
       const newItem = {
@@ -79,13 +80,13 @@ const ModalCompEventos = ({
         data: dataEvento.toDateString(),
         localizacao,
         admin,
+        imagem,
       };
       data.push(newItem);
     }
 
     console.log(newItem); // Exibe os dados no console
 
-    // localStorage.setItem("cad_cliente", JSON.stringify(data));
     onUpdateData([...data]);
 
     // Feche a modal após salvar
@@ -102,7 +103,6 @@ const ModalCompEventos = ({
         color="white"
         borderRadius="10px"
       >
-
         <ModalHeader>Cadastrar Novo Evento</ModalHeader>
         <ModalCloseButton
           icon={<FaTimes />}
@@ -176,17 +176,15 @@ const ModalCompEventos = ({
                   Não
                 </option>
               </Select>
-              <Box>
+            </Box>
+            <Box>
               <FormLabel>Selecione a imagem do Evento</FormLabel>
               <Input type="file" accept="image/*" onChange={handleImageChange} />
             </Box>
             <Box>
               {imagem && (
-                <Image src={imagem} maxH="200px" alt="Imagem" 
-                onChange={(e) => setImagem(e.target.value)}
-                />
+                <Image src={imagem} maxH="200px" alt="Imagem" />
               )}
-            </Box>
             </Box>
           </FormControl>
         </ModalBody>
@@ -201,7 +199,6 @@ const ModalCompEventos = ({
       </ModalContent>
     </Modal>
   );
-
 };
 
 export default ModalCompEventos;

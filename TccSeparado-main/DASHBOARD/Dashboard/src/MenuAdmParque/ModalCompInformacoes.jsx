@@ -84,7 +84,7 @@ const ModalCompInformacoes = ({
         color="white"
         borderRadius="10px"
       >
-        <ModalHeader>Cadastrar Novo Evento</ModalHeader>
+        <ModalHeader>Cadastrar uma Nova Informação</ModalHeader>
         <ModalCloseButton
           icon={<FaTimes />}
           _hover={{
