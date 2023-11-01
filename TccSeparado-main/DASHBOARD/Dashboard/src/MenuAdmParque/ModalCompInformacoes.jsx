@@ -1,106 +1,168 @@
 import React, { useState, useEffect } from "react";
 import {
-  useDisclosure,
-  Table,
-  Thead,
-  Tr,
-  Th,
-  Tbody,
-  Td,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Button,
+  FormControl,
+  FormLabel,
+  Input,
+  Box,
+  Textarea,
+  Select,
 } from "@chakra-ui/react";
-import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import "../css/HomeAdm.css";
-import Header from "../Header";
-import SidebarAdmParque from "../SidebarAdmParque";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
+import { FaTimes } from "react-icons/fa"; // Ícone de fechar
 
-
-function Informacoes({ data, handleEditEvento, handleDeleteEvento }) {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const [dataEdit, setDataEdit] = useState({});
-  const [dados, setDados] = useState(data);
+const ModalCompInformacoes = ({
+  data,
+  setData,
+  dataEdit,
+  isOpen,
+  onClose,
+  onUpdateData,
+}) => {
+  const [id, setId] = useState("");
+  const [titulo, setTitulo] = useState(dataEdit.titulo || "");
+  const [descricao, setDescricao] = useState(dataEdit.descricao || "");
+  const [dataEvento, setDataEvento] = useState(dataEdit.data || new Date());
+  const [adm, setAdm] = useState(dataEdit.adm || "Sim");
 
   useEffect(() => {
-    setDados(data);
-  }, [data]);
+    if (!Object.keys(dataEdit)) {
+      const nextId =
+        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
+      setId(nextId.toString());
+    }
+  }, [data, dataEdit]);
 
-  const handleEditItem = (item) => {
-    setDataEdit(item);
-    onOpen();
-  };
+  const handleSave = () => {
+    if (!titulo || !descricao) {
+      console.log("Campos obrigatórios não preenchidos.");
+      return;
+    }
 
-  const OpenSidebar = () => {
-    setOpenSidebarToggle(!openSidebarToggle);
+    if (Object.keys(dataEdit).length) {
+      data[dataEdit.index] = {
+        idEvento: dataEdit.idEvento,
+        titulo,
+        descricao,
+        data: dataEvento.toDateString(),
+        adm,
+      };
+    } else {
+      const newItem = {
+        idEvento: id,
+        titulo,
+        descricao,
+        data: dataEvento.toDateString(),
+        adm,
+      };
+      data.push(newItem);
+    }
+
+    console.log(newItem); // Exibe os dados no console
+
+    onUpdateData([...data]);
+
+    // Feche a modal após salvar
+    onClose();
   };
 
   return (
-    <>
-      <div className="grid-container">
-        <Header OpenSidebar={OpenSidebar} />
-        <SidebarAdmParque openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar} />
-
-        <main className="main-container">
-          <div className="main-title">
-            <h3>Eventosasdas</h3>
-            <button
-              className="botaoNovoCadastro"
-              onClick={onOpen}
-            >
-              NOVO CADASTRO
-            </button>
-          </div>
-
-          <div className="tamanhoTabela">
-            <Table className="tabela">
-              <Thead>
-                <Tr>
-                  <Th>ID</Th>
-                  <Th>TÍTULO</Th>
-                  <Th>DESCRIÇÃO</Th>
-                  <Th>DATA</Th>
-                  <Th>ADM</Th>
-                  <Th p={0}></Th>
-                  <Th p={0}></Th>
-                </Tr>
-              </Thead>
-              <Tbody>
-                {dados.map((item) => (
-                  <Tr key={item.id} cursor="pointer">
-                    <Td>{item.id}</Td>
-                    <Td>{item.titulo}</Td>
-                    <Td>{item.descricao}</Td>
-                    <Td>{item.data}</Td>
-                    <Td>{item.adm}</Td>
-                    <Td>
-                      <EditIcon
-                        fontSize={20}
-                        onClick={() => handleEditItem(item)}
-                      />
-                    </Td>
-                    <Td p={0}>
-                      <DeleteIcon
-                        fontSize={20}
-                        onClick={() => handleDeleteEvento(item.id)}
-                      />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
-            </Table>
-          </div>
-        </main>
-      </div>
-
-      <ModalCompEventos
-        data={dados}
-        setData={setDados}
-        dataEdit={dataEdit}
-        isOpen={isOpen}
-        onClose={onClose}
-      />
-    </>
+    <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+      <ModalOverlay />
+      <ModalContent
+        bg="rgba(255, 255, 255, 0.1)"
+        backdropFilter="blur(5px)"
+        zIndex="999"
+        color="white"
+        borderRadius="10px"
+      >
+        <ModalHeader>Cadastrar Novo Evento</ModalHeader>
+        <ModalCloseButton
+          icon={<FaTimes />}
+          _hover={{
+            color: "red.500",
+          }}
+          onClick={onClose} // Feche a modal ao clicar no ícone do X
+        />
+        <ModalBody>
+          <FormControl display="flex" flexDir="column" gap={4}>
+            <Box>
+              <FormLabel>ID</FormLabel>
+              <Input type="text" value={id} isReadOnly />
+            </Box>
+            <Box>
+              <FormLabel>TÍTULO</FormLabel>
+              <Input
+                type="text"
+                value={titulo}
+                onChange={(e) => setTitulo(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>DESCRIÇÃO</FormLabel>
+              <Textarea
+                value={descricao}
+                onChange={(e) => setDescricao(e.target.value)}
+              />
+            </Box>
+            <Box>
+              <FormLabel>DATA</FormLabel>
+              <DatePicker
+                selected={dataEvento}
+                onChange={(date) => setDataEvento(date)}
+                className="custom-datepicker"
+                placeholderText="Selecione uma data"
+                dateFormat="dd/MM/yyyy"
+                calendarClassName="calendar-background"
+                wrapperClassName="transparent-input"
+              />
+              <style>
+                {`
+                .transparent-input .react-datepicker__input-container input {
+                  background-color: rgba(255, 255, 255, 0.5);
+                  border-radius: 5px;
+                }
+              `}
+              </style>
+            </Box>
+            <Box>
+              <FormLabel>ADM</FormLabel>
+              <Select
+                value={adm}
+                onChange={(e) => setAdm(e.target.value)}
+                borderRadius="5px"
+                bg="rgba(255, 255, 255, 0.3)"
+                color="black"
+              >
+                <option value="Sim" style={{ backgroundColor: 'transparent' }}>
+                  Sim
+                </option>
+                <option value="Não" style={{ backgroundColor: 'transparent' }}>
+                  Não
+                </option>
+              </Select>
+            </Box>
+          </FormControl>
+        </ModalBody>
+        <ModalFooter justifyContent="start">
+          <Button colorScheme="green" mr={3} onClick={handleSave}>
+            SALVAR
+          </Button>
+          <Button colorScheme="red" onClick={onClose}>
+            CANCELAR
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
   );
-}
+};
 
-export default Informacoes;
+export default ModalCompInformacoes;

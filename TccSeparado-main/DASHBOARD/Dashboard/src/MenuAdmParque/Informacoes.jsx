@@ -12,7 +12,7 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import "../css/HomeAdm.css";
 import Header from "../Header";
 import SidebarAdmParque from "../SidebarAdmParque";
-import ModalCompInformacoes from "./ModalCompEventos";
+import ModalCompInformacoes from "./ModalCompInformacoes";
 
 function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
