@@ -18,6 +18,8 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const administrador = JSON.parse(localStorage.getItem("administrador"));
+
 
   const [dataEdit, setDataEdit] = useState({}); // Novo estado para dados editados
   const [dados, setDados] = useState(data); // Estado para armazenar os dados
@@ -28,7 +30,7 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
 
   const handleEditItem = (item) => {
     setDataEdit(item);
-    setIsOpen(true);
+    useDisclosure(true);
   };
 
   const OpenSidebar = () => {
@@ -60,9 +62,9 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
           <Thead>
             <Tr>
               <Th>ID</Th>
-              <Th>Título</Th>
+              <Th>nome</Th>
               <Th>Descrição</Th>
-              <Th>Data</Th>
+              <Th>endereco</Th>
               <Th>Adm</Th>
               <Th p={0}></Th>
               <Th p={0}></Th>
@@ -71,11 +73,11 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
           <Tbody>
           
               <Tr  cursor="pointer">
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
-                <Td></Td>
+                <Td>{administrador.select.lazer.idLazer}</Td>
+                <Td>{administrador.select.lazer.nome}</Td>
+                <Td>{administrador.select.lazer.descricao}</Td>
+                <Td>{administrador.select.lazer.endereco}</Td>
+                <Td>{administrador.select.lazer.idLazer}</Td>
                 <Td p={0}>
                   <EditIcon
                     fontSize={20}
@@ -102,7 +104,6 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
         setData={setDados}
         dataEdit={dataEdit}
         isOpen={isOpen}
-        onClose={() => setIsOpen(false)}
       />
     </>
   );

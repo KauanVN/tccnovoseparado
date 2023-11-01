@@ -54,15 +54,15 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 
 
   async function handleSave(){
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria) return;
-  
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria || !imagem) return;
+    console.log('oi')
       try {
         const token = await administrador.token;
   
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           };
   
           const response = await fetch(
@@ -71,31 +71,29 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               method: "PUT",
               headers: headers,
               body: JSON.stringify({
-                "idLazer": idLazer,
+                "id": idLazer,
                 "nome": nome,
                 "descricao": descricao,
                 "endereco": endereco,
                 "latitude": latitude,
                 "longetude": longetude,
                 "categoria": categoria,
-                "imagem": "imagem",
+                "imagem": imagem,
               }),
             }
           );
   
-          if (response.status === 200) {
+          if (response.status === 201) {
             console.log("Usuário cadastrado com sucesso!");
-            onClose();
-            window.location.reload();
           } else {
             console.error("Erro ao cadastar parque:", response.status);
           }
-          
+          window.location.reload();
         }
       } catch (error) {
         console.error("Erro ao excluir o usuário:", error);
       }
-
+    onClose();
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -111,6 +109,15 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
         <ModalCloseButton />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
+            <Box>
+              <FormLabel>ID</FormLabel>
+              <Input
+                type="text"
+                value={idLazer}
+                isReadOnly
+                onChange={(e) => getIdLazer(e.target.value)}
+              />
+            </Box>
             <Box>
               <FormLabel>Nome</FormLabel>
               <Input

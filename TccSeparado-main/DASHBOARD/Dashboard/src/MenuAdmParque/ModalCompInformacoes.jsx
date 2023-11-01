@@ -27,27 +27,58 @@ const ModalCompInformacoes = ({
   onClose,
   onUpdateData,
 }) => {
-  const [id, setId] = useState("");
-  const [titulo, setTitulo] = useState(dataEdit.titulo || "");
-  const [descricao, setDescricao] = useState(dataEdit.descricao || "");
-  const [dataEvento, setDataEvento] = useState(dataEdit.data || new Date());
-  const [adm, setAdm] = useState(dataEdit.adm || "Sim");
+  
 
-  useEffect(() => {
-    if (!Object.keys(dataEdit)) {
-      const nextId =
-        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
-      setId(nextId.toString());
-    }
-  }, [data, dataEdit]);
+  const administrador = JSON.parse(localStorage.getItem("administrador"));
 
-  const handleSave = () => {
-    if (!titulo || !descricao) {
-      console.log("Campos obrigatórios não preenchidos.");
-      return;
-    }
 
-    if (Object.keys(dataEdit).length) {
+
+
+  async function handleSave(){
+        
+            try {
+              const token = await administrador.token;
+        
+              if (token) {
+                const headers = {
+                  "Content-type": "application/json; charset=UTF-8",
+                  "Authorization": `Bearer ${token}`,
+                };
+        
+                const response = await fetch(
+                  `https://tcc-production-e100.up.railway.app/api/lazer`,
+                  {
+                    method: "PUT",
+                    headers: headers,
+                    body: JSON.stringify({
+                      "idLazer": idLazer,
+                      "nome": nome,
+                      "descricao": descricao,
+                      "endereco": endereco,
+                      "latitude": latitude,
+                      "longetude": longetude,
+                      "categoria": categoria,
+                      "imagem": "imagem",
+                    }),
+                  }
+                );
+        
+                if (response.status === 200) {
+                  alert("parque atualizado com sucesso!");
+                } else {
+                  console.error("Erro ao cadastar parque:", response.status);
+                }
+                
+              }
+            } catch (error) {
+              console.error("Erro ao excluir o usuário:", error);
+            }
+      
+        }
+
+    
+
+    /*if (Object.keys(dataEdit).length) {
       data[dataEdit.index] = {
         idEvento: dataEdit.idEvento,
         titulo,
@@ -65,14 +96,7 @@ const ModalCompInformacoes = ({
       };
       data.push(newItem);
     }
-
-    console.log(newItem); // Exibe os dados no console
-
-    onUpdateData([...data]);
-
-    // Feche a modal após salvar
-    onClose();
-  };
+*/
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -96,47 +120,27 @@ const ModalCompInformacoes = ({
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
               <FormLabel>ID</FormLabel>
-              <Input type="text" value={id} isReadOnly />
+              <Input type="text" value={administrador.select.idAdm} isReadOnly />
             </Box>
             <Box>
               <FormLabel>TÍTULO</FormLabel>
               <Input
                 type="text"
-                value={titulo}
+                value={administrador.select.lazer.nome}
                 onChange={(e) => setTitulo(e.target.value)}
               />
             </Box>
             <Box>
               <FormLabel>DESCRIÇÃO</FormLabel>
               <Textarea
-                value={descricao}
+                value={administrador.select.lazer.descricao}
                 onChange={(e) => setDescricao(e.target.value)}
               />
             </Box>
             <Box>
-              <FormLabel>DATA</FormLabel>
-              <DatePicker
-                selected={dataEvento}
-                onChange={(date) => setDataEvento(date)}
-                className="custom-datepicker"
-                placeholderText="Selecione uma data"
-                dateFormat="dd/MM/yyyy"
-                calendarClassName="calendar-background"
-                wrapperClassName="transparent-input"
-              />
-              <style>
-                {`
-                .transparent-input .react-datepicker__input-container input {
-                  background-color: rgba(255, 255, 255, 0.5);
-                  border-radius: 5px;
-                }
-              `}
-              </style>
-            </Box>
-            <Box>
               <FormLabel>ADM</FormLabel>
               <Select
-                value={adm}
+                value={administrador.email}
                 onChange={(e) => setAdm(e.target.value)}
                 borderRadius="5px"
                 bg="rgba(255, 255, 255, 0.3)"
