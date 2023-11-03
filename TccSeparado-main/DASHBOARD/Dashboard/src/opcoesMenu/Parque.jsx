@@ -230,6 +230,8 @@ function Parque({ data, handleDeleteParque }) {
                   <Th p={0}></Th>
                   <Th p={0}></Th>
                   <Th p={0}></Th>
+                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "correto" */}
+                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "incorreto" */}
                 </Tr>
               </Thead>
               <Tbody>

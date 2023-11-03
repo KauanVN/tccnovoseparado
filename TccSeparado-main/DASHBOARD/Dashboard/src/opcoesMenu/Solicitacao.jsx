@@ -200,6 +200,7 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
               <Th>ID do parque</Th>
               <Th>aceitar</Th>
               <Th>recusar</Th>
+              <Th p={0}></Th>
             </Tr>
           </Thead>
           <Tbody>
