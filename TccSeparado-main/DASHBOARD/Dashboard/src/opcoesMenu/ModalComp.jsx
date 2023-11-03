@@ -53,11 +53,8 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   var administrador = JSON.parse(localStorage.getItem("administrador"));
 
   async function handleSave(){
-    console.log("oi")
     if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria) return;
-    console.log("oi")
     if(idLazer == 1 ){
-      console.log("oi")
       cadastraParque()
       return;
     }
@@ -105,7 +102,6 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 
   async function cadastraParque(){
     //deixa invisivel o campo id
-    console.log("oi")
     try {
       const token = await administrador.token;
 

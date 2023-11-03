@@ -125,7 +125,6 @@ function Parque({ data, handleDeleteParque }) {
               "Content-type": "application/json; charset=UTF-8",
               "Authorization": `Bearer ${token}`,
             };
-            console.log("oi")
             const response = await fetch(
               `https://tcc-production-e100.up.railway.app/api/lazer/${id}`,
               {
