@@ -52,22 +52,17 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 
   var administrador = JSON.parse(localStorage.getItem("administrador"));
 
+
   async function handleSave(){
-    console.log("oi")
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria) return;
-    console.log("oi")
-    if(idLazer == 1 ){
-      console.log("oi")
-      cadastraParque()
-      return;
-    }
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria || !imagem) return;
+    console.log('oi')
       try {
         const token = await administrador.token;
   
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           };
   
           const response = await fetch(
@@ -76,79 +71,30 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               method: "PUT",
               headers: headers,
               body: JSON.stringify({
-                "idLazer": idLazer,
+                "id": idLazer,
                 "nome": nome,
                 "descricao": descricao,
                 "endereco": endereco,
                 "latitude": latitude,
                 "longetude": longetude,
                 "categoria": categoria,
-                "imagem": "imagem",
+                "imagem": imagem,
               }),
             }
           );
   
-          if (response.status === 200) {
-            console.log("Usuário atualizado com sucesso!");
-            window.location.reload();
-            onClose();
+          if (response.status === 201) {
+            console.log("Usuário cadastrado com sucesso!");
           } else {
-            console.error("Erro ao atualizar parque:", response.status);
+            console.error("Erro ao cadastar parque:", response.status);
           }
-     
+          window.location.reload();
         }
       } catch (error) {
         console.error("Erro ao excluir o usuário:", error);
       }
- 
+    onClose();
   }
-
-  async function cadastraParque(){
-    //deixa invisivel o campo id
-    console.log("oi")
-    try {
-      const token = await administrador.token;
-
-      if (token) {
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          "Authorization": `Bearer ${token}`,
-        };
-
-        const response = await fetch(
-          `https://tcc-production-e100.up.railway.app/api/lazer`,
-          {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify({
-              "nome": nome,
-              "descricao": descricao,
-              "endereco": endereco,
-              "latitude": latitude,
-              "longetude": longetude,
-              "categoria": categoria,
-              "imagem": "imagem",
-            }),
-          }
-        );
-
-        if (response.status === 201) {
-          console.log("parque cadastrado com sucesso!");
-          window.location.reload();
-          onClose();
-       
-        } else {
-          console.error("Erro ao cadastar parque:", response.status);
-        }
-   
-      }
-    } catch (error) {
-      console.error("Erro ao excluir o usuário:", error);
-    }
-
-}
-  
-
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay />
