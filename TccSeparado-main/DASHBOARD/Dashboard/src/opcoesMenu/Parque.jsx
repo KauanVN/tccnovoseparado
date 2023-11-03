@@ -82,7 +82,7 @@ function Parque({ data, handleDeleteParque }) {
       if (token) {
         const headers = {
           "Content-type": "application/json; charset=UTF-8",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         };
 
         const response = await fetch(
