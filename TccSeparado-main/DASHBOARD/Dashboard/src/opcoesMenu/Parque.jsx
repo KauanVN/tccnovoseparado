@@ -244,7 +244,13 @@ function Parque({ data, handleDeleteParque }) {
                     <Td>{item.latitude}</Td>
                     <Td>{item.longetude}</Td>
                     <Td>{item.categoria}</Td>
-                    <Td>{item.admin}</Td>
+                  
+                    <Td>
+  {item.administradores.map((admin) => (
+    <div key={admin.idAdm}>{admin.idAdm}</div>
+  ))}
+</Td>
+
                     <Td p={0}>
                       <EditIcon
                         fontSize={20}
