@@ -17,18 +17,19 @@ import {
   Image,
 } from '@chakra-ui/react';
 
-import { useEffect } from "react";
+import { useEffect } from 'react';
 
 const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
-  const [idLazer, getIdLazer] = useState(dataEdit.idLazer || "");
-  const [nome, setNome] = useState(dataEdit.nome || "");
-  const [descricao, setDescricao] = useState(dataEdit.descricao || "");
-  const [endereco, setEndereco] = useState(dataEdit.endereco || "");
-  const [latitude, setLatitude] = useState(dataEdit.latitude || "");
-  const [longetude, setLongetude] = useState(dataEdit.longetude || "");
-  const [categoria, setCategoria] = useState(dataEdit.categoria || "");
-  const [admin, setAdmin] = useState(dataEdit.admin || "Não");
-  const [imagem, setImagem] = useState(dataEdit.imagem || "");
+  const [idLazer, getIdLazer] = useState(dataEdit.idLazer || '');
+  const [nome, setNome] = useState(dataEdit.nome || '');
+  const [descricao, setDescricao] = useState(dataEdit.descricao || '');
+  const [cep, setCep] = useState(dataEdit.cep || ''); // Adicione um estado para o CEP
+  const [endereco, setEndereco] = useState(dataEdit.endereco || '');
+  const [latitude, setLatitude] = useState(dataEdit.latitude || '');
+  const [longetude, setLongetude] = useState(dataEdit.longetude || '');
+  const [categoria, setCategoria] = useState(dataEdit.categoria || '');
+  const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
+  const [imagem, setImagem] = useState(dataEdit.imagem || '');
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
@@ -50,100 +51,121 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
     }
   };
 
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  var administrador = JSON.parse(localStorage.getItem('administrador'));
 
-  async function handleSave(){
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude|| !categoria) return;
-    if(idLazer == 1 ){
-      cadastraParque()
+  // Função para obter o endereço a partir de um CEP usando a API ViaCEP
+  const obterEnderecoDoCEP = async () => {
+    try {
+      const viaCEPURL = `https://viacep.com.br/ws/${cep}/json/`;
+      const response = await fetch(viaCEPURL);
+      const data = await response.json();
+      if (!data.erro) {
+        setEndereco(`${data.logradouro}, ${data.localidade} - ${data.uf}`);
+      } else {
+        console.error('CEP não encontrado.');
+      }
+    } catch (error) {
+      console.error('Erro na consulta do ViaCEP:', error);
+    }
+  };
+
+  // Função para obter as coordenadas de latitude e longitude a partir do endereço usando a API do Nominatim
+  const obterCoordenadasDoEndereco = async () => {
+    try {
+      const nominatimURL = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(endereco)}`;
+      const response = await fetch(nominatimURL);
+      const data = await response.json();
+      if (data.length > 0) {
+        setLatitude(data[0].lat);
+        setLongetude(data[0].lon);
+      } else {
+        console.error('Endereço não encontrado no Nominatim.');
+      }
+    } catch (error) {
+      console.error('Erro na consulta do Nominatim:', error);
+    }
+  };
+
+  async function handleSave() {
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude || !categoria) return;
+    if (idLazer === '1') {
+      cadastraParque();
       return;
     }
-      try {
-        const token = await administrador.token;
-  
-        if (token) {
-          const headers = {
-            "Content-type": "application/json; charset=UTF-8",
-            "Authorization": `Bearer ${token}`,
-          };
-  
-          const response = await fetch(
-            `https://tcc-production-e100.up.railway.app/api/lazer`,
-            {
-              method: "PUT",
-              headers: headers,
-              body: JSON.stringify({
-                "idLazer": idLazer,
-                "nome": nome,
-                "descricao": descricao,
-                "endereco": endereco,
-                "latitude": latitude,
-                "longetude": longetude,
-                "categoria": categoria,
-                "imagem": "imagem",
-              }),
-            }
-          );
-  
-          if (response.status === 200) {
-            console.log("Usuário atualizado com sucesso!");
-            window.location.reload();
-            onClose();
-          } else {
-            console.error("Erro ao atualizar parque:", response.status);
-          }
-     
-        }
-      } catch (error) {
-        console.error("Erro ao excluir o usuário:", error);
-      }
- 
-  }
-
-  async function cadastraParque(){
-    //deixa invisivel o campo id
     try {
       const token = await administrador.token;
 
       if (token) {
         const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          "Authorization": `Bearer ${token}`,
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${token}`,
         };
 
-        const response = await fetch(
-          `https://tcc-production-e100.up.railway.app/api/lazer`,
-          {
-            method: "POST",
-            headers: headers,
-            body: JSON.stringify({
-              "nome": nome,
-              "descricao": descricao,
-              "endereco": endereco,
-              "latitude": latitude,
-              "longetude": longetude,
-              "categoria": categoria,
-              "imagem": "imagem",
-            }),
-          }
-        );
+        const response = await fetch(`https://tcc-production-e100.up.railway.app/api/lazer`, {
+          method: 'PUT',
+          headers: headers,
+          body: JSON.stringify({
+            idLazer: idLazer,
+            nome: nome,
+            descricao: descricao,
+            endereco: endereco,
+            latitude: latitude,
+            longetude: longetude,
+            categoria: categoria,
+            imagem: 'imagem',
+          }),
+        });
 
-        if (response.status === 201) {
-          console.log("parque cadastrado com sucesso!");
+        if (response.status === 200) {
+          console.log('Usuário atualizado com sucesso!');
           window.location.reload();
           onClose();
-       
         } else {
-          console.error("Erro ao cadastar parque:", response.status);
+          console.error('Erro ao atualizar parque:', response.status);
         }
-   
       }
     } catch (error) {
-      console.error("Erro ao excluir o usuário:", error);
+      console.error('Erro ao excluir o usuário:', error);
     }
+  }
 
-}
-  
+  async function cadastraParque() {
+    // Deixa invisível o campo id
+    try {
+      const token = await administrador.token;
+
+      if (token) {
+        const headers = {
+          'Content-type': 'application/json; charset=UTF-8',
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(`https://tcc-production-e100.up.railway.app/api/lazer`, {
+          method: 'POST',
+          headers: headers,
+          body: JSON.stringify({
+            nome: nome,
+            descricao: descricao,
+            endereco: endereco,
+            latitude: latitude,
+            longetude: longetude,
+            categoria: categoria,
+            imagem: 'imagem',
+          }),
+        });
+
+        if (response.status === 201) {
+          console.log('Parque cadastrado com sucesso!');
+          window.location.reload();
+          onClose();
+        } else {
+          console.error('Erro ao cadastrar parque:', response.status);
+        }
+      }
+    } catch (error) {
+      console.error('Erro ao excluir o usuário:', error);
+    }
+  }
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -184,28 +206,30 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               />
             </Box>
             <Box>
+              <FormLabel>CEP</FormLabel>
+              <Input
+                type="text"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+                onBlur={obterEnderecoDoCEP} // Chama a função quando o campo perde o foco
+              />
+            </Box>
+            <Box>
               <FormLabel>Endereço</FormLabel>
               <Input
                 type="text"
                 value={endereco}
                 onChange={(e) => setEndereco(e.target.value)}
+                onBlur={obterCoordenadasDoEndereco} // Chama a função quando o campo perde o foco
               />
             </Box>
             <Box>
               <FormLabel>Latitude</FormLabel>
-              <Input
-                type="text"
-                value={latitude}
-                onChange={(e) => setLatitude(e.target.value)}
-              />
+              <Input type="text" value={latitude} isReadOnly />
             </Box>
             <Box>
               <FormLabel>Longitude</FormLabel>
-              <Input
-                type="text"
-                value={longetude}
-                onChange={(e) => setLongetude(e.target.value)}
-              />
+              <Input type="text" value={longetude} isReadOnly />
             </Box>
             <Box>
               <FormLabel>Categoria</FormLabel>
@@ -238,8 +262,11 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             </Box>
             <Box>
               {imagem && (
-                <Image src={imagem} maxH="200px" alt="Imagem" 
-                onChange={(e) => setImagem(e.target.value)}
+                <Image
+                  src={imagem}
+                  maxH="200px"
+                  alt="Imagem"
+                  onChange={(e) => setImagem(e.target.value)}
                 />
               )}
             </Box>
@@ -260,4 +287,3 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 };
 
 export default ModalComp;
- 
