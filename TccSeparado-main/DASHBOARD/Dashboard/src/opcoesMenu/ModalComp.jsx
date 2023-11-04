@@ -233,11 +233,20 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             </Box>
             <Box>
               <FormLabel>Categoria</FormLabel>
-              <Input
-                type="text"
-                value={categoria}
-                onChange={(e) => setCategoria(e.target.value)}
-              />
+              <Select
+              value={categoria}
+              onChange={(e) => setCategoria(e.target.value)}
+              borderRadius="5px"
+              bg="rgba(255, 255, 255, 0.3)"
+              color="black"
+              >
+                <option value="Parque" style={{ backgroundColor: 'transparent' }}>
+                  Parque
+                </option>
+                <option value="Lazer" style={{ backgroundColor: 'transparent' }}>
+                  Lazer
+                </option>
+              </Select>
             </Box>
             <Box>
               <FormLabel>Adm</FormLabel>
