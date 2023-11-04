@@ -227,11 +227,9 @@ function Parque({ data, handleDeleteParque }) {
                   <Th>Longitude</Th>
                   <Th>Categoria</Th>
                   <Th>Adm</Th>
-                  <Th p={0}></Th>
-                  <Th p={0}></Th>
-                  <Th p={0}></Th>
-                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "correto" */}
-                  <Th p={0}></Th> {/* Novo cabeçalho para ícone "incorreto" */}
+                  <Th>Editar</Th>
+                  <Th>Excluir</Th>
+                  <Th>Imagem</Th>
                 </Tr>
               </Thead>
               <Tbody>
