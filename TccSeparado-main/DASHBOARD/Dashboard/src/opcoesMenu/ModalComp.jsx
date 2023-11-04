@@ -28,6 +28,12 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   const [latitude, setLatitude] = useState(dataEdit.latitude || '');
   const [longetude, setLongetude] = useState(dataEdit.longetude || '');
   const [categoria, setCategoria] = useState(dataEdit.categoria || '');
+  const [bairro, setBairro] = useState('');
+  const [uf, setUf] = useState('');
+  const [localidade, setLocalidade] = useState('');
+
+
+
   const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
   const [imagem, setImagem] = useState(dataEdit.imagem || '');
   const [selectedImage, setSelectedImage] = useState(null);
@@ -61,6 +67,9 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
       const data = await response.json();
       if (!data.erro) {
         setEndereco(`${data.logradouro}, ${data.localidade} - ${data.uf}`);
+        setBairro(`${data.bairro}`)
+        setUf(`${data.uf}`)
+        setLocalidade(`${data.localidade}`)
       } else {
         console.error('CEP não encontrado.');
       }
@@ -98,7 +107,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
       if (token) {
         const headers = {
           'Content-type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         };
 
         const response = await fetch(`https://tcc-production-e100.up.railway.app/api/lazer`, {
@@ -112,6 +121,10 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             latitude: latitude,
             longetude: longetude,
             categoria: categoria,
+            uf: uf,
+            bairro: bairro,
+            cep: cep,
+            localidade: localidade,
             imagem: 'imagem',
           }),
         });
@@ -150,6 +163,10 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             latitude: latitude,
             longetude: longetude,
             categoria: categoria,
+            uf: uf,
+            bairro: bairro,
+            cep: cep,
+            localidade: localidade,
             imagem: 'imagem',
           }),
         });
