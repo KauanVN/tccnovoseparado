@@ -64,8 +64,9 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
               <Th>Data</Th>
               <Th>Localização</Th>
               <Th>Adm</Th>
-              <Th p={0}></Th>
-              <Th p={0}></Th>
+              <Th>Editar</Th>
+              <Th>Excluir</Th>
+             
             </Tr>
           </Thead>
           <Tbody>
