@@ -17,8 +17,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
-import { FaTimes } from "react-icons/fa"; // Ícone de fechar
+import "react-datepicker/dist/react-datepicker.css";
+import { FaTimes } from "react-icons/fa";
 
 const ModalCompEventos = ({
   data,
@@ -36,6 +36,9 @@ const ModalCompEventos = ({
   const [admin, setAdmin] = useState(dataEdit.admin || "Sim");
   const [imagem, setImagem] = useState(dataEdit.imagem || "");
   const [selectedImage, setSelectedImage] = useState(null);
+  const [cep, setCep] = useState(dataEdit.cep || ""); // Adicione um estado para o CEP
+  const [latitude, setLatitude] = useState(""); // Adicione um estado para a latitude
+  const [longitude, setLongitude] = useState(""); // Adicione um estado para a longitude
 
   useEffect(() => {
     if (!Object.keys(dataEdit)) {
@@ -56,6 +59,21 @@ const ModalCompEventos = ({
     }
   };
 
+  const handleCepBlur = () => {
+    // Chama a função para obter o endereço, latitude e longitude a partir do CEP
+    // Substitua a função abaixo pela sua função de busca de CEP e coordenadas
+    fetch(`https://seu-backend.com/obter-endereco?cep=${cep}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setLocalizacao(data.endereco);
+        setLatitude(data.latitude);
+        setLongitude(data.longitude);
+      })
+      .catch((error) => {
+        console.error("Erro ao obter dados do CEP:", error);
+      });
+  };
+
   const handleSave = () => {
     if (!nome || !descricao || !localizacao) {
       console.log("Campos obrigatórios não preenchidos.");
@@ -71,6 +89,9 @@ const ModalCompEventos = ({
         localizacao,
         admin,
         imagem,
+        cep,
+        latitude,
+        longitude,
       };
     } else {
       const newItem = {
@@ -81,15 +102,15 @@ const ModalCompEventos = ({
         localizacao,
         admin,
         imagem,
+        cep,
+        latitude,
+        longitude,
       };
       data.push(newItem);
     }
 
-    console.log(newItem); // Exibe os dados no console
-
     onUpdateData([...data]);
 
-    // Feche a modal após salvar
     onClose();
   };
 
@@ -109,7 +130,7 @@ const ModalCompEventos = ({
           _hover={{
             color: "red.500",
           }}
-          onClick={onClose} // Feche a modal ao clicar no ícone do X
+          onClick={onClose}
         />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
@@ -153,12 +174,29 @@ const ModalCompEventos = ({
               </style>
             </Box>
             <Box>
+              <FormLabel>CEP</FormLabel>
+              <Input
+                type="text"
+                value={cep}
+                onChange={(e) => setCep(e.target.value)}
+                onBlur={handleCepBlur} // Chama a função quando o campo perde o foco
+              />
+            </Box>
+            <Box>
               <FormLabel>Localização</FormLabel>
               <Input
                 type="text"
                 value={localizacao}
                 onChange={(e) => setLocalizacao(e.target.value)}
               />
+            </Box>
+            <Box>
+              <FormLabel>Latitude</FormLabel>
+              <Input type="text" value={latitude} readOnly />
+            </Box>
+            <Box>
+              <FormLabel>Longitude</FormLabel>
+              <Input type="text" value={longitude} readOnly />
             </Box>
             <Box>
               <FormLabel>Adm</FormLabel>
