@@ -18,14 +18,15 @@ import {
   Spinner,
 } from '@chakra-ui/react';
 
-const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
+
+const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
   const [idLazer, setIdLazer] = useState(dataEdit.idLazer || '');
   const [nome, setNome] = useState(dataEdit.nome || '');
   const [descricao, setDescricao] = useState(dataEdit.descricao || '');
   const [cep, setCep] = useState(dataEdit.cep || '');
   const [endereco, setEndereco] = useState(dataEdit.endereco || '');
   const [latitude, setLatitude] = useState(dataEdit.latitude || '');
-  const [longitude, setLongitude] = useState(dataEdit.longitude || '');
+  const [longetude, setLongetude] = useState(dataEdit.longetude || '');
   const [categoria, setCategoria] = useState(dataEdit.categoria || '');
   const [bairro, setBairro] = useState(dataEdit.bairro || '');
   const [uf, setUf] = useState(dataEdit.uf || '');
@@ -33,6 +34,8 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
   const [imagem, setImagem] = useState(dataEdit.imagem || '');
   const [isLoading, setIsLoading] = useState(false);
+  
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
 
   useEffect(() => {
     if (!Object.keys(dataEdit).length) {
@@ -40,6 +43,27 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
       setIdLazer(nextId.toString());
     }
   }, [data, dataEdit]);
+
+
+  
+  useEffect(() => {
+    if (!isOpen) {
+      // Reset the form when the modal is closed
+      setIdLazer('');
+      setNome('');
+      setDescricao('');
+      setCep('');
+      setEndereco('');
+      setLatitude('');
+      setLongetude('');
+      setCategoria('');
+      setBairro('');
+      setUf('');
+      setLocalidade('');
+      setAdmin('Não');
+      setImagem('');
+    }
+  }, [isOpen]);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -73,7 +97,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
 
         if (nominatimData.length > 0) {
           setLatitude(nominatimData[0].lat);
-          setLongitude(nominatimData[0].lon);
+          setLongetude(nominatimData[0].lon);
         } else {
           console.error('Endereço não encontrado no Nominatim.');
         }
@@ -88,7 +112,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   };
 
   const handleSave = async () => {
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longitude || !categoria) {
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude || !categoria) {
       return;
     }
 
@@ -115,7 +139,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             descricao: descricao,
             endereco: endereco,
             latitude: latitude,
-            longitude: longitude,
+            longetude: longetude,
             categoria: categoria,
             uf: uf,
             bairro: bairro,
@@ -156,7 +180,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             descricao: descricao,
             endereco: endereco,
             latitude: latitude,
-            longitude: longitude,
+            longetude: longetude,
             categoria: categoria,
             uf: uf,
             bairro: bairro,
@@ -194,12 +218,13 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
-              <FormLabel>ID</FormLabel>
+              <FormLabel style={{ display: isEditing ? 'block' : 'none' }}>ID</FormLabel>
               <Input
                 type="text"
                 value={idLazer}
                 isReadOnly
                 onChange={(e) => setIdLazer(e.target.value)}
+                style={{ display: isEditing ? 'block' : 'none' }}
               />
             </Box>
             <Box>
@@ -248,9 +273,9 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               <FormLabel>Longitude</FormLabel>
               <Input
                 type="text"
-                value={longitude}
+                value={longetude}
                 isReadOnly
-                onChange={(e) => setLongitude(e.target.value)}
+                onChange={(e) => setLongetude(e.target.value)}
               />
             </Box>
             <Box>
@@ -319,4 +344,4 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
   );
 };
 
-export default ModalComp;
+export default ModalCompParque;

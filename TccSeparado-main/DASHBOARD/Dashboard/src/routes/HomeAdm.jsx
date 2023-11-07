@@ -27,7 +27,7 @@ import {
   Link,
 } from "@chakra-ui/react";
 
-import ModalComp from "../opcoesMenu/ModalComp";
+import ModalComp from "../opcoesMenu/ModalCompParque";
 import ModalCompUsuario from "../opcoesMenu/ModalCompUsuario";
 import ModalCompSolicitacao from "../opcoesMenu/ModalCompSolicitacao";
 import Parque from "../opcoesMenu/Parque";

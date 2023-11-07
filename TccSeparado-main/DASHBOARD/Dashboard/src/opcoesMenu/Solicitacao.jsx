@@ -11,7 +11,7 @@ import {
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import ModalCompSolicitacao from "./ModalCompSolicitacao";
-import ModalComp from "./ModalComp";
+import ModalComp from "./ModalCompParque";
 import "../css/HomeAdm.css"
 import Header from "../Header";
 import Sidebar from "../Sidebar";
@@ -95,6 +95,7 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
           );
   
           if (response.status === 200) {
+            //chama a função aqui
             window.location.reload();
           }
         }

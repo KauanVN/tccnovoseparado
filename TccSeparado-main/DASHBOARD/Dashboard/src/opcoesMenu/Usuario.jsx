@@ -10,7 +10,7 @@ import {
   Td,
 } from "@chakra-ui/react";
 import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
-import ModalComp from "./ModalComp";
+import ModalComp from "./ModalCompParque";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 

@@ -12,7 +12,7 @@ import { EditIcon, DeleteIcon } from "@chakra-ui/icons";
 import swal from "sweetalert";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
-import ModalComp from "./ModalComp";
+import ModalCompParque from "./ModalCompParque";
 
 
 function Parque({ data, handleDeleteParque }) {
@@ -73,6 +73,13 @@ function Parque({ data, handleDeleteParque }) {
   const handleEditParque = (parque) => {
     onOpen();
     setDataEdit(parque);
+  };
+  const handleCadastraParque = () => {
+    onOpen();
+    // Redefina o dataEdit para um objeto vazio quando o botão "NOVO CADASTRO" é clicado
+    setDataEdit({});
+    localStorage.setItem("a", "true");
+
   };
 
   async function buscarParques() {
@@ -173,7 +180,8 @@ function Parque({ data, handleDeleteParque }) {
             <button
             className="botaoNovoCadastro"
             onClick={() => {
-              onOpen();
+              handleCadastraParque();
+              localStorage.setItem("a","true")
             }}
           >
             NOVO CADASTRO
@@ -182,7 +190,7 @@ function Parque({ data, handleDeleteParque }) {
 
           {isOpen && (
             showParque ? (
-              <ModalComp
+              <ModalCompParque
                 isOpen={isOpen}
                 onClose={onClose}
                 data={dataParque}
@@ -190,6 +198,7 @@ function Parque({ data, handleDeleteParque }) {
                 dataEdit={dataEdit}
                 setDataEdit={setDataEdit}
                 handleAddItem={handleAddItem}
+                isEditing={!!dataEdit.idLazer} // Defina isEditing com base em se há um ID no dataEdit
               />
             ) : (
               showUsuario ? (
