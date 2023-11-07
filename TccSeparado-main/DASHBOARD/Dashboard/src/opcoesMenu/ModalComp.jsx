@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Modal,
   ModalOverlay,
@@ -15,99 +15,95 @@ import {
   Select,
   Button,
   Image,
+  Spinner,
 } from '@chakra-ui/react';
 
-import { useEffect } from 'react';
-
 const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
-  const [idLazer, getIdLazer] = useState(dataEdit.idLazer || '');
+  const [idLazer, setIdLazer] = useState(dataEdit.idLazer || '');
   const [nome, setNome] = useState(dataEdit.nome || '');
   const [descricao, setDescricao] = useState(dataEdit.descricao || '');
-  const [cep, setCep] = useState(dataEdit.cep || ''); // Adicione um estado para o CEP
+  const [cep, setCep] = useState(dataEdit.cep || '');
   const [endereco, setEndereco] = useState(dataEdit.endereco || '');
   const [latitude, setLatitude] = useState(dataEdit.latitude || '');
-  const [longetude, setLongetude] = useState(dataEdit.longetude || '');
+  const [longitude, setLongitude] = useState(dataEdit.longitude || '');
   const [categoria, setCategoria] = useState(dataEdit.categoria || '');
-  const [bairro, setBairro] = useState('');
-  const [uf, setUf] = useState('');
-  const [localidade, setLocalidade] = useState('');
-
-
-
+  const [bairro, setBairro] = useState(dataEdit.bairro || '');
+  const [uf, setUf] = useState(dataEdit.uf || '');
+  const [localidade, setLocalidade] = useState(dataEdit.localidade || '');
   const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
   const [imagem, setImagem] = useState(dataEdit.imagem || '');
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (!Object.keys(dataEdit).length) {
-      // Se não houver dados de edição, calcula o próximo ID sequencial
       const nextId = data.length > 0 ? Math.max(...data.map((item) => item.idLazer)) + 1 : 1;
-      getIdLazer(nextId.toString());
+      setIdLazer(nextId.toString());
     }
   }, [data, dataEdit]);
 
-  const handleImageChange = (item) => {
-    const file = item.target.files[0];
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagem(item.imagem);
+        setImagem(reader.result);
       };
       reader.readAsDataURL(file);
     }
   };
 
-  var administrador = JSON.parse(localStorage.getItem('administrador'));
-
-  // Função para obter o endereço a partir de um CEP usando a API ViaCEP
-  const obterEnderecoDoCEP = async () => {
+  const fetchCEPAndCoordinates = async () => {
+    setIsLoading(true);
     try {
       const viaCEPURL = `https://viacep.com.br/ws/${cep}/json/`;
-      const response = await fetch(viaCEPURL);
-      const data = await response.json();
-      if (!data.erro) {
-        setEndereco(`${data.logradouro}, ${data.localidade} - ${data.uf}`);
-        setBairro(`${data.bairro}`)
-        setUf(`${data.uf}`)
-        setLocalidade(`${data.localidade}`)
+      const viaCEPResponse = await fetch(viaCEPURL);
+      const viaCEPData = await viaCEPResponse.json();
+
+      if (!viaCEPData.erro) {
+        setEndereco(`${viaCEPData.logradouro}, ${viaCEPData.localidade} - ${viaCEPData.uf}`);
+        setBairro(viaCEPData.bairro);
+        setUf(viaCEPData.uf);
+        setLocalidade(viaCEPData.localidade);
+
+        const nominatimURL = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(
+          viaCEPData.logradouro + ', ' + viaCEPData.localidade
+        )}`;
+        const nominatimResponse = await fetch(nominatimURL);
+        const nominatimData = await nominatimResponse.json();
+
+        if (nominatimData.length > 0) {
+          setLatitude(nominatimData[0].lat);
+          setLongitude(nominatimData[0].lon);
+        } else {
+          console.error('Endereço não encontrado no Nominatim.');
+        }
       } else {
         console.error('CEP não encontrado.');
       }
     } catch (error) {
-      console.error('Erro na consulta do ViaCEP:', error);
+      console.error('Erro na consulta do ViaCEP/Nominatim:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Função para obter as coordenadas de latitude e longitude a partir do endereço usando a API do Nominatim
-  const obterCoordenadasDoEndereco = async () => {
-    try {
-      const nominatimURL = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(endereco)}`;
-      const response = await fetch(nominatimURL);
-      const data = await response.json();
-      if (data.length > 0) {
-        setLatitude(data[0].lat);
-        setLongetude(data[0].lon);
-      } else {
-        console.error('Endereço não encontrado no Nominatim.');
-      }
-    } catch (error) {
-      console.error('Erro na consulta do Nominatim:', error);
+  const handleSave = async () => {
+    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longitude || !categoria) {
+      return;
     }
-  };
 
-  async function handleSave() {
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude || !categoria) return;
     if (idLazer === '1') {
       cadastraParque();
       return;
     }
+
     try {
       const token = await administrador.token;
 
       if (token) {
         const headers = {
           'Content-type': 'application/json; charset=UTF-8',
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         };
 
         const response = await fetch(`https://tcc-production-e100.up.railway.app/api/lazer`, {
@@ -119,7 +115,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             descricao: descricao,
             endereco: endereco,
             latitude: latitude,
-            longetude: longetude,
+            longitude: longitude,
             categoria: categoria,
             uf: uf,
             bairro: bairro,
@@ -140,10 +136,9 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
     } catch (error) {
       console.error('Erro ao excluir o usuário:', error);
     }
-  }
+  };
 
-  async function cadastraParque() {
-    // Deixa invisível o campo id
+  const cadastraParque = async () => {
     try {
       const token = await administrador.token;
 
@@ -161,7 +156,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
             descricao: descricao,
             endereco: endereco,
             latitude: latitude,
-            longetude: longetude,
+            longitude: longitude,
             categoria: categoria,
             uf: uf,
             bairro: bairro,
@@ -182,7 +177,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
     } catch (error) {
       console.error('Erro ao excluir o usuário:', error);
     }
-  }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -204,7 +199,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
                 type="text"
                 value={idLazer}
                 isReadOnly
-                onChange={(e) => getIdLazer(e.target.value)}
+                onChange={(e) => setIdLazer(e.target.value)}
               />
             </Box>
             <Box>
@@ -228,7 +223,7 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
                 type="text"
                 value={cep}
                 onChange={(e) => setCep(e.target.value)}
-                onBlur={obterEnderecoDoCEP} // Chama a função quando o campo perde o foco
+                onBlur={fetchCEPAndCoordinates}
               />
             </Box>
             <Box>
@@ -236,26 +231,36 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
               <Input
                 type="text"
                 value={endereco}
+                isReadOnly
                 onChange={(e) => setEndereco(e.target.value)}
-                onBlur={obterCoordenadasDoEndereco} // Chama a função quando o campo perde o foco
               />
             </Box>
             <Box>
               <FormLabel>Latitude</FormLabel>
-              <Input type="text" value={latitude} isReadOnly />
+              <Input
+                type="text"
+                value={latitude}
+                isReadOnly
+                onChange={(e) => setLatitude(e.target.value)}
+              />
             </Box>
             <Box>
               <FormLabel>Longitude</FormLabel>
-              <Input type="text" value={longetude} isReadOnly />
+              <Input
+                type="text"
+                value={longitude}
+                isReadOnly
+                onChange={(e) => setLongitude(e.target.value)}
+              />
             </Box>
             <Box>
               <FormLabel>Categoria</FormLabel>
               <Select
-              value={categoria}
-              onChange={(e) => setCategoria(e.target.value)}
-              borderRadius="5px"
-              bg="rgba(255, 255, 255, 0.3)"
-              color="black"
+                value={categoria}
+                onChange={(e) => setCategoria(e.target.value)}
+                borderRadius="5px"
+                bg="rgba(255, 255, 255, 0.3)"
+                color="black"
               >
                 <option value="Parque" style={{ backgroundColor: 'transparent' }}>
                   Parque
@@ -292,9 +297,11 @@ const ModalComp = ({ data, dataEdit, isOpen, onClose }) => {
                   src={imagem}
                   maxH="200px"
                   alt="Imagem"
-                  onChange={(e) => setImagem(e.target.value)}
                 />
               )}
+            </Box>
+            <Box>
+              {isLoading && <Spinner size="lg" color="green" />}
             </Box>
           </FormControl>
         </ModalBody>
