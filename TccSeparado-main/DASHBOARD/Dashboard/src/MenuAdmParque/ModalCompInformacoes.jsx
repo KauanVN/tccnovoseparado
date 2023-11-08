@@ -46,8 +46,7 @@ const ModalCompInformacoes = ({
                 };
         
                 const response = await fetch(
-                  `https://tcc-production-e100.up.railway.app
-/api/lazer`,
+                  `https://tcc-production-e100.up.railway.app/api/lazer`,
                   {
                     method: "PUT",
                     headers: headers,

@@ -19,8 +19,6 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const administrador = JSON.parse(localStorage.getItem("administrador"));
-
-
   const [dataEdit, setDataEdit] = useState({}); // Novo estado para dados editados
   const [dados, setDados] = useState(data); // Estado para armazenar os dados
 
@@ -36,6 +34,41 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
   };
+
+
+  async function buscarParque() {
+    try {
+      const token = await administrador.token;
+
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": `Bearer ${token}`,
+        };
+
+        const response = await fetch(
+          "http://tcc-production-e100.up.railway.app/api/lazer",
+          {
+            method: "GET",
+            headers: headers,
+          }
+        );
+
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("Dados da resposta: p", data);
+          setDados(data);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
+
+  useEffect(() => {
+    buscarParques();
+  }, []);
+
 
   return (
     <>

@@ -98,6 +98,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
         if (nominatimData.length > 0) {
           setLatitude(nominatimData[0].lat);
           setLongetude(nominatimData[0].lon);
+
         } else {
           console.error('Endereço não encontrado no Nominatim.');
         }
@@ -112,11 +113,9 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
   };
 
   const handleSave = async () => {
-    if (!idLazer || !nome || !descricao || !endereco || !latitude || !longetude || !categoria) {
-      return;
-    }
 
-    if (idLazer === '1') {
+    console.log(idLazer)
+    if (idLazer == 1) {
       cadastraParque();
       return;
     }
@@ -127,7 +126,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
       if (token) {
         const headers = {
           'Content-type': 'application/json; charset=UTF-8',
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         };
 
         const response = await fetch(`https://tcc-production-e100.up.railway.app/api/lazer`, {
