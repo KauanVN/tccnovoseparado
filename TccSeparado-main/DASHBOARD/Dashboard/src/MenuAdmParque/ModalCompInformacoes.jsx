@@ -120,27 +120,26 @@ const ModalCompInformacoes = ({
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
               <FormLabel>ID</FormLabel>
-              <Input type="text" value={administrador.select.idAdm} isReadOnly />
+              <Input type="text"  isReadOnly />
             </Box>
             <Box>
               <FormLabel>TÍTULO</FormLabel>
               <Input
                 type="text"
-                value={administrador.select.lazer.nome}
+                
                 onChange={(e) => setTitulo(e.target.value)}
               />
             </Box>
             <Box>
               <FormLabel>DESCRIÇÃO</FormLabel>
               <Textarea
-                value={administrador.select.lazer.descricao}
+               
                 onChange={(e) => setDescricao(e.target.value)}
               />
             </Box>
             <Box>
               <FormLabel>ADM</FormLabel>
               <Select
-                value={administrador.email}
                 onChange={(e) => setAdm(e.target.value)}
                 borderRadius="5px"
                 bg="rgba(255, 255, 255, 0.3)"

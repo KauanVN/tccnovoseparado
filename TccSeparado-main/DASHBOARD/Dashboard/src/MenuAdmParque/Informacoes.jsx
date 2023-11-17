@@ -17,14 +17,10 @@ import ModalCompInformacoes from "./ModalCompInformacoes";
 function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
-
   const administrador = JSON.parse(localStorage.getItem("administrador"));
-  const [dataEdit, setDataEdit] = useState({}); // Novo estado para dados editados
-  const [dados, setDados] = useState(data); // Estado para armazenar os dados
+  const [dataEdit, setDataEdit] = useState([]); // Novo estado para dados editados
 
-  useEffect(() => {
-    setDados(data); // Atualize os dados quando a propriedade data mudar
-  }, [data]);
+console.log(administrador)
 
   const handleEditItem = (item) => {
     setDataEdit(item);
@@ -34,40 +30,6 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle);
   };
-
-
-  async function buscarParque() {
-    try {
-      const token = await administrador.token;
-
-      if (token) {
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          "Authorization": `Bearer ${token}`,
-        };
-
-        const response = await fetch(
-          "http://tcc-production-e100.up.railway.app/api/lazer",
-          {
-            method: "GET",
-            headers: headers,
-          }
-        );
-
-        if (response.status === 200) {
-          const data = await response.json();
-          console.log("Dados da resposta: p", data);
-          setDados(data);
-        }
-      }
-    } catch (error) {
-      console.error("Erro ao fazer a solicitação:", error);
-    }
-  }
-
-  useEffect(() => {
-    buscarParques();
-  }, []);
 
 
   return (
@@ -104,27 +66,27 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
             </Tr>
           </Thead>
           <Tbody>
-          
-              <Tr  cursor="pointer">
-                <Td>{administrador.select.lazer.idLazer}</Td>
-                <Td>{administrador.select.lazer.nome}</Td>
-                <Td>{administrador.select.lazer.descricao}</Td>
-                <Td>{administrador.select.lazer.endereco}</Td>
-                <Td>{administrador.select.lazer.idLazer}</Td>
-                <Td p={0}>
-                  <EditIcon
-                    fontSize={20}
-                    onClick={() => handleEditItem()} // Use handleEditItem
-                  />
-                </Td>
-                <Td p={0}>
-                  <DeleteIcon
-                    fontSize={20}
-                    onClick={() => handleDeleteInformacoes()}
-                  />
-                </Td>
-              </Tr>
-          </Tbody>
+       
+          <Tr cursor="pointer">
+            <Td>{administrador.parque.idLazer}</Td>
+            <Td>{administrador.parque.nome}</Td>
+            <Td>{administrador.parque.descricao}</Td>
+            <Td>{administrador.parque.endereco}</Td>
+            <Td>
+      {/* Mapear a lista de administradores */}
+      <ul>
+        {administrador.parque.administradores.map((adm) => (
+          <li key={adm.idAdm}>{adm.email}</li>
+        ))}
+      </ul>
+    </Td>            <Td p={0}>
+              <EditIcon fontSize={20} onClick={() => handleEditItem()} />
+            </Td>
+            <Td p={0}>
+              <DeleteIcon fontSize={20} onClick={() => handleDeleteInformacoes(administrador.parque.idLazer)} />
+            </Td>
+          </Tr>
+      </Tbody>
         </Table>
       </div>
         </main>
@@ -133,8 +95,7 @@ function Informacoes({ data, handleEditInformacoes, handleDeleteInformacoes }) {
       
       {/* Renderize o ModalCompInformacoes com os estados adequados */}
       <ModalCompInformacoes
-        data={dados}
-        setData={setDados}
+        data={administrador.parque}
         dataEdit={dataEdit}
         isOpen={isOpen}
       />
