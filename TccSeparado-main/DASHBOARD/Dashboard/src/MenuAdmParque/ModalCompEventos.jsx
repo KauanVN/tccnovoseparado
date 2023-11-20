@@ -28,22 +28,24 @@ const ModalCompEventos = ({
   onClose,
   onUpdateData,
 }) => {
-  const [id, setId] = useState("");
   const [nome, setNome] = useState(dataEdit.nome || "");
   const [descricao, setDescricao] = useState(dataEdit.descricao || "");
-  const [dataEvento, setDataEvento] = useState(dataEdit.data || new Date());
+  const [dataInicio, setDataInicio] = useState(dataEdit.dataInicio || new Date());
+  const [dataTermino, setDataTermino] = useState(dataEdit.dataTermino || new Date());
   const [localizacao, setLocalizacao] = useState(dataEdit.localizacao || "");
-  const [admin, setAdmin] = useState(dataEdit.admin || "Sim");
   const [imagem, setImagem] = useState(dataEdit.imagem || "");
   const [selectedImage, setSelectedImage] = useState(null);
 
   useEffect(() => {
     if (!Object.keys(dataEdit)) {
-      const nextId =
-        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
-      setId(nextId.toString());
+      setNome("");
+      setDescricao("");
+      setDataInicio(new Date());
+      setDataTermino(new Date());
+      setLocalizacao("");
+      setImagem("");
     }
-  }, [data, dataEdit]);
+  }, [dataEdit]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -67,25 +69,26 @@ const ModalCompEventos = ({
         idEvento: dataEdit.idEvento,
         nome,
         descricao,
-        data: dataEvento.toDateString(),
+        dataInicio: dataInicio.toDateString(),
+        dataTermino: dataTermino.toDateString(),
         localizacao,
-        admin,
         imagem,
       };
     } else {
+      const nextId =
+        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
+
       const newItem = {
-        idEvento: id,
+        idEvento: nextId.toString(),
         nome,
         descricao,
-        data: dataEvento.toDateString(),
+        dataInicio: dataInicio.toDateString(),
+        dataTermino: dataTermino.toDateString(),
         localizacao,
-        admin,
         imagem,
       };
       data.push(newItem);
     }
-
-    console.log(newItem); // Exibe os dados no console
 
     onUpdateData([...data]);
 
@@ -114,10 +117,6 @@ const ModalCompEventos = ({
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
-              <FormLabel>ID</FormLabel>
-              <Input type="text" value={id} isReadOnly />
-            </Box>
-            <Box>
               <FormLabel>Nome</FormLabel>
               <Input
                 type="text"
@@ -133,16 +132,29 @@ const ModalCompEventos = ({
               />
             </Box>
             <Box>
-              <FormLabel>Data</FormLabel>
+              <FormLabel>Data de Início</FormLabel>
               <DatePicker
-                selected={dataEvento}
-                onChange={(date) => setDataEvento(date)}
+                selected={dataInicio}
+                onChange={(date) => setDataInicio(date)}
                 className="custom-datepicker"
                 placeholderText="Selecione uma data"
                 dateFormat="dd/MM/yyyy"
                 calendarClassName="calendar-background"
                 wrapperClassName="transparent-input"
               />
+            </Box>
+            <Box>
+              <FormLabel>Data de Término</FormLabel>
+              <DatePicker
+                selected={dataTermino}
+                onChange={(date) => setDataTermino(date)}
+                className="custom-datepicker"
+                placeholderText="Selecione uma data"
+                dateFormat="dd/MM/yyyy"
+                calendarClassName="calendar-background"
+                wrapperClassName="transparent-input"
+              />
+              
               <style>
                 {`
                 .transparent-input .react-datepicker__input-container input {
@@ -159,23 +171,6 @@ const ModalCompEventos = ({
                 value={localizacao}
                 onChange={(e) => setLocalizacao(e.target.value)}
               />
-            </Box>
-            <Box>
-              <FormLabel>Adm</FormLabel>
-              <Select
-                value={admin}
-                onChange={(e) => setAdmin(e.target.value)}
-                borderRadius="5px"
-                bg="rgba(255, 255, 255, 0.3)"
-                color="black"
-              >
-                <option value="Sim" style={{ backgroundColor: 'transparent' }}>
-                  Sim
-                </option>
-                <option value="Não" style={{ backgroundColor: 'transparent' }}>
-                  Não
-                </option>
-              </Select>
             </Box>
             <Box>
               <FormLabel>Selecione a imagem do Evento</FormLabel>

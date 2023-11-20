@@ -1,3 +1,4 @@
+// Importe as dependências necessárias
 import React, { useState, useEffect } from "react";
 import {
   Modal,
@@ -15,88 +16,66 @@ import {
   Textarea,
   Select,
 } from "@chakra-ui/react";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
-import { FaTimes } from "react-icons/fa"; // Ícone de fechar
+import { FaTimes } from "react-icons/fa";
 
-const ModalCompInformacoes = ({
-  data,
-  setData,
-  dataEdit,
-  isOpen,
-  onClose,
-  onUpdateData,
-}) => {
-  
+const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
+  // Defina os estados necessários
+  const [titulo, setTitulo] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [adm, setAdm] = useState("");
 
-  const administrador = JSON.parse(localStorage.getItem("administrador"));
-
-
-
-
-  async function handleSave(){
-        
-            try {
-              const token = await administrador.token;
-        
-              if (token) {
-                const headers = {
-                  "Content-type": "application/json; charset=UTF-8",
-                  "Authorization": `Bearer ${token}`,
-                };
-        
-                const response = await fetch(
-                  `https://tcc-production-e100.up.railway.app/api/lazer`,
-                  {
-                    method: "PUT",
-                    headers: headers,
-                    body: JSON.stringify({
-                      "idLazer": idLazer,
-                      "nome": nome,
-                      "descricao": descricao,
-                      "endereco": endereco,
-                      "latitude": latitude,
-                      "longetude": longetude,
-                      "categoria": categoria,
-                      "imagem": "imagem",
-                    }),
-                  }
-                );
-        
-                if (response.status === 200) {
-                  alert("parque atualizado com sucesso!");
-                } else {
-                  console.error("Erro ao cadastar parque:", response.status);
-                }
-                
-              }
-            } catch (error) {
-              console.error("Erro ao excluir o usuário:", error);
-            }
-      
-        }
-
-    
-
-    /*if (Object.keys(dataEdit).length) {
-      data[dataEdit.index] = {
-        idEvento: dataEdit.idEvento,
-        titulo,
-        descricao,
-        data: dataEvento.toDateString(),
-        adm,
-      };
+  // Use useEffect para atualizar os estados quando dataEdit muda
+  useEffect(() => {
+    if (dataEdit) {
+      setTitulo(dataEdit.nome || "");
+      setDescricao(dataEdit.descricao || "");
+      setAdm(dataEdit.adm || "");
     } else {
-      const newItem = {
-        idEvento: id,
-        titulo,
-        descricao,
-        data: dataEvento.toDateString(),
-        adm,
-      };
-      data.push(newItem);
+      setTitulo("");
+      setDescricao("");
+      setAdm("");
     }
-*/
+  }, [dataEdit]);
+
+  // Função para lidar com o salvamento dos dados
+  const handleSave = async () => {
+    try {
+      const token = await administrador.token;
+
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": `Bearer ${token}`,
+        };
+
+        const response = await fetch(
+          `https://tcc-production-e100.up.railway.app/api/lazer`,
+          {
+            method: "PUT",
+            headers: headers,
+            body: JSON.stringify({
+              // Substitua estas chaves pelos dados corretos
+              "idLazer": dataEdit.idLazer,
+              "nome": titulo,
+              "descricao": descricao,
+              // ... outros campos ...
+            }),
+          }
+        );
+
+        if (response.status === 200) {
+          // Adicione a lógica apropriada após o sucesso
+          alert("Parque atualizado com sucesso!");
+          // Chame onUpdateData se precisar atualizar dados no componente pai
+          onUpdateData && onUpdateData();
+        } else {
+          console.error("Erro ao cadastrar parque:", response.status);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao excluir o usuário:", error);
+    }
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
@@ -108,49 +87,34 @@ const ModalCompInformacoes = ({
         color="white"
         borderRadius="10px"
       >
-        <ModalHeader>Cadastrar uma Nova Informação</ModalHeader>
+        <ModalHeader>Editar Informação</ModalHeader>
         <ModalCloseButton
           icon={<FaTimes />}
           _hover={{
             color: "red.500",
           }}
-          onClick={onClose} // Feche a modal ao clicar no ícone do X
+          onClick={onClose}
         />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
               <FormLabel>ID</FormLabel>
-              <Input type="text"  isReadOnly />
+              {/* Use value={dataEdit?.idLazer} para definir o valor readonly */}
+              <Input type="text" value={dataEdit?.idLazer} isReadOnly />
             </Box>
             <Box>
-              <FormLabel>TÍTULO</FormLabel>
-              <Input
-                type="text"
-                
-                onChange={(e) => setTitulo(e.target.value)}
-              />
+              <FormLabel>Título</FormLabel>
+              <Input type="text" value={titulo} onChange={(e) => setTitulo(e.target.value)} />
             </Box>
             <Box>
-              <FormLabel>DESCRIÇÃO</FormLabel>
-              <Textarea
-               
-                onChange={(e) => setDescricao(e.target.value)}
-              />
+              <FormLabel>Descrição</FormLabel>
+              <Textarea value={descricao} onChange={(e) => setDescricao(e.target.value)} />
             </Box>
             <Box>
-              <FormLabel>ADM</FormLabel>
-              <Select
-                onChange={(e) => setAdm(e.target.value)}
-                borderRadius="5px"
-                bg="rgba(255, 255, 255, 0.3)"
-                color="black"
-              >
-                <option value="Sim" style={{ backgroundColor: 'transparent' }}>
-                  Sim
-                </option>
-                <option value="Não" style={{ backgroundColor: 'transparent' }}>
-                  Não
-                </option>
+              <FormLabel>Adm</FormLabel>
+              <Select value={adm} onChange={(e) => setAdm(e.target.value)}>
+                <option value="Sim">Sim</option>
+                <option value="Não">Não</option>
               </Select>
             </Box>
           </FormControl>
