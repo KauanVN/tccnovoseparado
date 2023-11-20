@@ -87,6 +87,7 @@ const ModalCompEventos = ({
               "local": localizacao,
               "dataInicio": dataInicio,
               "dataTermino": dataTermino,
+              "descricao":descricao,
               "status": 1,
               "lazer": {
                 "idLazer": idLazer,
@@ -94,15 +95,14 @@ const ModalCompEventos = ({
             })
           }
         );
-console.log(dataInicio)
         if (response.status === 201) {
           alert("evento criado!");
-          // window.location.reload();
+          window.location.reload();
 
           // Chame onUpdateData se precisar atualizar dados no componente pai
 
         } else {
-          console.error("Erro ao cadastrar parque:", response.status);
+          console.error("Erro ao cadastrar evento:", response.status);
         }
       }
     } catch (error) {

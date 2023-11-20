@@ -70,8 +70,39 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
     onOpen();
   };
 
-  const handleDeleteItem = (id) => {
-    setIsDeleteAlertOpen(true);
+  const handleDeleteItem = async (id) => {
+
+    try {
+      const token = await administrador.token;
+      const idLazer = await administrador.parque.idLazer
+
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": `Bearer ${token}`,
+        };
+
+        const response = await fetch(
+          `https://tcc-production-e100.up.railway.app/api/evento/`+id,
+          {
+            method: "DELETE",
+            headers: headers,
+
+          }
+        );
+        if (response.status === 204) {
+          alert("evento deletado!");
+          window.location.reload();
+
+          // Chame onUpdateData se precisar atualizar dados no componente pai
+
+        } else {
+          console.error("Erro ao deletar evento:", response.status);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao excluir o usuário:", error);
+    }
   };
 
   const handleConfirmDelete = () => {
@@ -119,7 +150,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
               <Tbody>
                 {dados && dados.map((item, index) => (
                   <Tr key={index} cursor="pointer">
-                    <Td>{index + 1}</Td>
+                    <Td>{item.idEvento}</Td>
                     <Td>{item.nomeEvento}</Td>
                     <Td>{item.descricao}</Td>
                     <Td>{item.dataInicio}</Td>
@@ -134,7 +165,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                     <Td p={0}>
                       <DeleteIcon
                         fontSize={20}
-                        onClick={() => handleDeleteItem(item.id)}
+                        onClick={() => handleDeleteItem(item.idEvento)}
                       />
                     </Td>
                   </Tr>
