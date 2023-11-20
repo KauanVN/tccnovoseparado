@@ -25,42 +25,45 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dataEdit, setDataEdit] = useState({});
-  const [dados, setDados] = useState(data);
+  const [dados, setDados] = useState([]);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
   const cancelRef = React.useRef();
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
+
+
+  async function buscarEventos() {
+    try {
+      const token = await administrador.token;
+
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        };
+
+        const response = await fetch(
+          "https://tcc-production-e100.up.railway.app/api/evento/"+administrador.parque.idLazer,
+          {
+            method: "GET",
+            headers: headers,
+          }
+        );
+
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("Dados da resposta: p", data);
+          setDados(data);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
 
   useEffect(() => {
-    setDados(data);
-  }, [data]);
+    buscarEventos();
+  }, []);
 
-  const eventos = [
-    // Array de objetos representando eventos
-    {
-      nome: "Casa de Cultura do Tatuapé",
-      descricao:
-        "É um lugar feito em uma construção histórica e hoje abriga um centro cultural com atividades educativas e exposições. Recomendado: Todas as idades / Horários: 9h às 17h",
-      dataInicio: "11/11/2023",
-      dataTermino: "15/11/2023",
-      localizacao: "R. Guabijú, 49 - Tatuapé, São Paulo - SP, 03077100",
-    },
-    {
-      nome: "Parque Vila do Rodeio",
-      descricao:
-        "Criado como uma forma de preservar as nascentes do Córrego do Rodeio, na Zona Leste da capital, o Parque Vila do Rodeio recebe diversos visitantes que estão em busca de lazer e diversão na cidade.",
-      dataInicio: "22/11/2023",
-      dataTermino: "25/11/2023",
-      localizacao:
-        "R. Igarapé da Bela Aurora, 342 - Conj. Hab. Inacio Monteiro, São Paulo - SP, 08472-200",
-    },
-    {
-      nome: "Parque da Consciência Negra",
-      descricao:
-        "Localizado na Cidade Tiradentes, Zona Leste da capital paulista e foi criado para preservar as nascentes do Córrego Itaquera e da mata em estágio de regeneração. Recomendado: Todas as idades / Horários: 6h às 18h",
-      dataInicio: "03/12/2023",
-      dataTermino: "10/12/2023",
-      localizacao: "R. José Francisco Brandão, 320 - Cidade Tiradentes, São Paulo - SP",
-    },
-  ];
 
   const handleEditItem = (item) => {
     setDataEdit(item);
@@ -114,7 +117,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                 </Tr>
               </Thead>
               <Tbody>
-                {eventos.map((item, index) => (
+                {data && dados.map((item, index) => (
                   <Tr key={index} cursor="pointer">
                     <Td>{index + 1}</Td>
                     <Td>{item.nome}</Td>

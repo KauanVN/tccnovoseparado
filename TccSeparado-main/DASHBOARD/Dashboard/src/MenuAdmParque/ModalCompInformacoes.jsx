@@ -23,6 +23,8 @@ const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
   const [titulo, setTitulo] = useState("");
   const [descricao, setDescricao] = useState("");
   const [adm, setAdm] = useState("");
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
+
 
   // Use useEffect para atualizar os estados quando dataEdit muda
   useEffect(() => {
@@ -56,18 +58,27 @@ const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
             body: JSON.stringify({
               // Substitua estas chaves pelos dados corretos
               "idLazer": dataEdit.idLazer,
-              "nome": titulo,
+              "bairro": "Cidade Tiradentes",
+              "categoria": "parque",
+              "cep": "08471740",
               "descricao": descricao,
-              // ... outros campos ...
+              "endereco": "Rua René de Toledo, São Paulo - SP",
+              "imagem": "imagem",
+              "latitude": "-23.6002617",
+              "localidade": "São Paulo",
+              "longetude": "-46.4017482",
+              "nome": titulo,
+              "uf": "SP"
+          
             }),
           }
         );
 
         if (response.status === 200) {
-          // Adicione a lógica apropriada após o sucesso
+         console.log(titulo)
           alert("Parque atualizado com sucesso!");
-          // Chame onUpdateData se precisar atualizar dados no componente pai
-          onUpdateData && onUpdateData();
+          login()
+     
         } else {
           console.error("Erro ao cadastrar parque:", response.status);
         }
@@ -76,6 +87,42 @@ const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
       console.error("Erro ao excluir o usuário:", error);
     }
   };
+
+  const login = () => {
+    const senha = localStorage.getItem("senha")
+console.log(senha)
+console.log(administrador.select.email)
+
+    fetch('https://tcc-production-e100.up.railway.app/api/administrador/login', {
+      method: 'POST',
+      body: JSON.stringify({
+        "email": administrador.select.email,
+        "senha": senha,
+      }),
+      headers: {
+        'Content-type': 'application/json; charset=UTF-8',
+      },
+    })
+    .then(response => {
+      if (response.status === 200) {
+        return response.json();
+      } else {
+        alert("Usuário não encontrado!");
+      }
+    })
+    .then(data => {
+      if (data) {
+        console.log(data);
+        localStorage.setItem('administrador', JSON.stringify(data));
+        window.location.reload();
+      }
+    })
+    .catch(error => {
+      console.error("Erro durante a requisição:", error);
+      alert("Erro");
+    });
+  }
+
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">

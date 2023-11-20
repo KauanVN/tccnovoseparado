@@ -29,6 +29,7 @@ export default function Login({ isOpen, setCloseLogin }) {
 
   const login = (data) => {
     console.log(data);
+    localStorage.setItem('senha', data.password)
     fetch('https://tcc-production-e100.up.railway.app/api/administrador/login', {
       method: 'POST',
       body: JSON.stringify({
@@ -50,6 +51,7 @@ export default function Login({ isOpen, setCloseLogin }) {
       if (data) {
         console.log(data);
         localStorage.setItem('administrador', JSON.stringify(data));
+        console.log(localStorage.getItem("senha"))
         alert("Usuário encontrado!");
         if (data.select.role === "MANAGER") {
           navigate("/dashboard");

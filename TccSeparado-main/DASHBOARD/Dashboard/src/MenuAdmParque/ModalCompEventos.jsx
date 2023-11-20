@@ -35,6 +35,8 @@ const ModalCompEventos = ({
   const [localizacao, setLocalizacao] = useState(dataEdit.localizacao || "");
   const [imagem, setImagem] = useState(dataEdit.imagem || "");
   const [selectedImage, setSelectedImage] = useState(null);
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
+
 
   useEffect(() => {
     if (!Object.keys(dataEdit)) {
@@ -58,42 +60,55 @@ const ModalCompEventos = ({
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!nome || !descricao || !localizacao) {
       console.log("Campos obrigatórios não preenchidos.");
       return;
     }
+    console.log(nome)
+    try {
+      const token = await administrador.token;
+      const idLazer = await administrador.parque.idLazer
 
-    if (Object.keys(dataEdit).length) {
-      data[dataEdit.index] = {
-        idEvento: dataEdit.idEvento,
-        nome,
-        descricao,
-        dataInicio: dataInicio.toDateString(),
-        dataTermino: dataTermino.toDateString(),
-        localizacao,
-        imagem,
-      };
-    } else {
-      const nextId =
-        data.length > 0 ? Math.max(...data.map((item) => item.idEvento)) + 1 : 1;
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          "Authorization": `Bearer ${token}`,
+        };
 
-      const newItem = {
-        idEvento: nextId.toString(),
-        nome,
-        descricao,
-        dataInicio: dataInicio.toDateString(),
-        dataTermino: dataTermino.toDateString(),
-        localizacao,
-        imagem,
-      };
-      data.push(newItem);
+        const response = await fetch(
+          `https://tcc-production-e100.up.railway.app/api/evento`,
+          {
+            method: "POST",
+            headers: headers,
+            body: JSON.stringify({
+
+              "nomeEvento": nome,
+              "local": localizacao,
+              "dataInicio": dataInicio,
+              "dataTermino": dataTermino,
+              "status": 1,
+              "lazer": {
+                "idLazer": idLazer,
+              }
+            })
+          }
+        );
+
+        if (response.status === 201) {
+          alert("evento criado!");
+          // window.location.reload();
+
+          // Chame onUpdateData se precisar atualizar dados no componente pai
+
+        } else {
+          console.error("Erro ao cadastrar parque:", response.status);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao excluir o usuário:", error);
     }
 
-    onUpdateData([...data]);
-
-    // Feche a modal após salvar
-    onClose();
   };
 
   return (
@@ -154,7 +169,7 @@ const ModalCompEventos = ({
                 calendarClassName="calendar-background"
                 wrapperClassName="transparent-input"
               />
-              
+
               <style>
                 {`
                 .transparent-input .react-datepicker__input-container input {
