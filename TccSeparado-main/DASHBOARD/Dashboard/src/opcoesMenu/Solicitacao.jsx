@@ -16,6 +16,8 @@ import "../css/HomeAdm.css"
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import { CheckIcon, CloseIcon } from "@chakra-ui/icons"; // Importe os ícones CheckIcon e CloseIcon
+import emailjs from 'emailjs-com';
+
 
 
 function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
@@ -27,45 +29,66 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
   const [showSolicitacao, setShowSolicitacao] = useState(false);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dados, setDados] = useState([]);
+  const [message, setMessage] = useState('');
+
+
   var administrador = JSON.parse(localStorage.getItem("administrador"));
   
-  async function adicionarAdm(dadosAdm){
+  async function enviarEmail(dadosAdm){
 
-    try{
-      const token = await administrador.token
-      if (token) {
-     
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: `Bearer ${token}`,
-        };
+    const serviceID = 'service_6j4klt9';
+    const templateID = 'template_r1lbe7b';
+    const userID = 'KoyIHsuN6B0BoyfIw';
 
-        const response = await fetch(
-          "https://tcc-production-e100.up.railway.app/api/administrador",
-          {
-            method: "POST", 
-            headers: headers,
-            body: JSON.stringify({
-              "email": dadosAdm.email,
-              "senha": dadosAdm.senha,
-              "lazer":{
-                "idLazer":dadosAdm.lazer.idLazer
-              }
-            })
+    setMessage('Parabens você foi aprovado utilize os dados cadastrados para efetuar o login!')
+
+    emailjs.send(serviceID, templateID, { from_email: dadosAdm.email, message, from_name: 'EmpresaUp' }, userID)
+    .then((response) => {
+      alert("email enviado com sucesso")
+      adicionarAdm(dadosAdm)
+    })
+    .catch((error) => {
+      console.error('Erro ao enviar o email:', error);
+    });
+
+    }
+
+    async function adicionarAdm(dadosAdm){
+      try{
+        const token = await administrador.token
+        if (token) {
+       
+          const headers = {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+          };
+  
+          const response = await fetch(
+            "https://tcc-production-e100.up.railway.app/api/administrador",
+            {
+              method: "POST", 
+              headers: headers,
+              body: JSON.stringify({
+                "email": dadosAdm.email,
+                "senha": dadosAdm.senha,
+                "lazer":{
+                  "idLazer":dadosAdm.lazer.idLazer
+                }
+              })
+            }
+          );
+  
+          if (response.status === 201) {
+            console.log(dadosAdm)
+            alert("administrador adicionado com sucesso")
+            atualizaStatus(dadosAdm)
+          
           }
-        );
-
-        if (response.status === 201) {
-          console.log(dadosAdm)
-          alert("administrador adicionado com sucesso")
-          atualizaStatus(dadosAdm)
-        
         }
-      }
-    } catch (error) {
-      console.error("Erro ao fazer a solicitação:", error);
+      } catch (error) {
+        console.error("Erro ao fazer a solicitação:", error);
     }
-    }
+  }
 
     async function atualizaStatus(dadosAdm){
 
@@ -216,7 +239,7 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
                     <Td>
                       <CheckIcon
                         fontSize={20}
-                        onClick={() => adicionarAdm(item)
+                        onClick={() => enviarEmail(item)
                         }
                       />
                     </Td>
