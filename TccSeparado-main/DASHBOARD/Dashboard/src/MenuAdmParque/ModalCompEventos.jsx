@@ -94,7 +94,7 @@ const ModalCompEventos = ({
             })
           }
         );
-
+console.log(dataInicio)
         if (response.status === 201) {
           alert("evento criado!");
           // window.location.reload();

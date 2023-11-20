@@ -117,14 +117,14 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                 </Tr>
               </Thead>
               <Tbody>
-                {data && dados.map((item, index) => (
+                {dados && dados.map((item, index) => (
                   <Tr key={index} cursor="pointer">
                     <Td>{index + 1}</Td>
-                    <Td>{item.nome}</Td>
+                    <Td>{item.nomeEvento}</Td>
                     <Td>{item.descricao}</Td>
                     <Td>{item.dataInicio}</Td>
                     <Td>{item.dataTermino}</Td>
-                    <Td>{item.localizacao}</Td>
+                    <Td>{item.local}</Td>
                     <Td>
                       <EditIcon
                         fontSize={20}
