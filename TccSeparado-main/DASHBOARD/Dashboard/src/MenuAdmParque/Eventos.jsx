@@ -27,9 +27,9 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   const [dataEdit, setDataEdit] = useState({});
   const [dados, setDados] = useState([]);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
+  const [editedData, setEditedData] = useState({}); // Novo estado para armazenar os dados editados
   const cancelRef = React.useRef();
   var administrador = JSON.parse(localStorage.getItem("administrador"));
-
 
   async function buscarEventos() {
     try {
@@ -42,7 +42,8 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
         };
 
         const response = await fetch(
-          "https://tcc-production-e100.up.railway.app/api/evento/"+administrador.parque.idLazer,
+          "https://tcc-production-e100.up.railway.app/api/evento/" +
+            administrador.parque.idLazer,
           {
             method: "GET",
             headers: headers,
@@ -64,38 +65,33 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
     buscarEventos();
   }, []);
 
-
   const handleEditItem = (item) => {
+    setEditedData(item); // Armazena os dados de edição
     setDataEdit(item);
     onOpen();
   };
 
   const handleDeleteItem = async (id) => {
-
     try {
       const token = await administrador.token;
-      const idLazer = await administrador.parque.idLazer
+      const idLazer = await administrador.parque.idLazer;
 
       if (token) {
         const headers = {
           "Content-type": "application/json; charset=UTF-8",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         };
 
         const response = await fetch(
-          `https://tcc-production-e100.up.railway.app/api/evento/`+id,
+          `https://tcc-production-e100.up.railway.app/api/evento/` + id,
           {
             method: "DELETE",
             headers: headers,
-
           }
         );
         if (response.status === 204) {
           alert("evento deletado!");
           window.location.reload();
-
-          // Chame onUpdateData se precisar atualizar dados no componente pai
-
         } else {
           console.error("Erro ao deletar evento:", response.status);
         }
@@ -106,9 +102,9 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   };
 
   const handleConfirmDelete = () => {
-    handleDeleteEvento(dataEdit.id); // Chame a função para excluir o evento
-    onClose(); // Feche a modal de edição após a exclusão
-    setIsDeleteAlertOpen(false); // Feche a modal de confirmação de exclusão
+    handleDeleteEvento(dataEdit.id);
+    onClose();
+    setIsDeleteAlertOpen(false);
   };
 
   const handleCancelDelete = () => {

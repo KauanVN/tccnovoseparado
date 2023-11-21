@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import 
 { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill, BsTreeFill }
  from 'react-icons/bs'
@@ -12,56 +12,68 @@ import '../App.css'
 
 
 
+
 function DashboardAdmParque() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
-
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  const [eventos, setEventos] = useState([]);
+  const [ativos, setAtivos] = useState(0);
+  const [inativos, setInativos] = useState(0);
   const OpenSidebar = () => {
+
     setOpenSidebarToggle(!openSidebarToggle)
   }
+  async function buscarEventos() {
+    try {
+      const token = await administrador.token;
+  
+      if (token) {
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        };
+  
+        const response = await fetch(
+          "https://tcc-production-e100.up.railway.app/api/evento/" +
+            administrador.parque.idLazer,
+          {
+            method: "GET",
+            headers: headers,
+          }
+        );
+  
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("Dados da resposta: ", data);
+         setEventos(data);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
+  
+  const contarEventos = (eventos) => {
+    const ativosCount = eventos.filter((evento) => evento.status === 1).length;
+    const inativosCount = eventos.filter((evento) => evento.status === 2).length;
+    setAtivos(ativosCount);
+    setInativos(inativosCount);
+  };
+  useEffect(() => {
+    contarEventos(eventos);
+  }, [eventos]);
+
+  useEffect(() => {
+    buscarEventos()
+  },);
+
 
 
     const data = [
         {
-          name: 'Page A',
-          uv: 4000,
-          pv: 2400,
-          amt: 2400,
-        },
-        {
-          name: 'Page B',
-          uv: 3000,
-          pv: 1398,
-          amt: 2210,
-        },
-        {
-          name: 'Page C',
-          uv: 2000,
-          pv: 9800,
-          amt: 2290,
-        },
-        {
-          name: 'Page D',
-          uv: 2780,
-          pv: 3908,
-          amt: 2000,
-        },
-        {
-          name: 'Page E',
-          uv: 1890,
-          pv: 4800,
-          amt: 2181,
-        },
-        {
-          name: 'Page F',
-          uv: 2390,
-          pv: 3800,
-          amt: 2500,
-        },
-        {
-          name: 'Page G',
-          uv: 3490,
-          pv: 4300,
-          amt: 2100,
+          name: 'Ativos',
+          uv: ativos,
+          pv: inativos,
         },
       ];
      
@@ -80,31 +92,17 @@ function DashboardAdmParque() {
           <div className='main-cards'>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>PRODUCTS</h3>
+                      <h3>Quantidade de Eventos ativos</h3>
                       <BsFillArchiveFill className='card_icon'/>
                   </div>
-                  <h1>300</h1>
+                  <h1>{ativos}</h1>
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>CATEGORIES</h3>
+                      <h3>Quantidade de Eventos passados</h3>
                       <BsFillGrid3X3GapFill className='card_icon'/>
                   </div>
-                  <h1>12</h1>
-              </div>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>CUSTOMERS</h3>
-                      <BsPeopleFill className='card_icon'/>
-                  </div>
-                  <h1>33</h1>
-              </div>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>ALERTS</h3>
-                      <BsFillBellFill className='card_icon'/>
-                  </div>
-                  <h1>42</h1>
+                  <h1>{inativos}</h1>
               </div>
           </div>
   
@@ -112,10 +110,10 @@ function DashboardAdmParque() {
               <ResponsiveContainer width="100%" height="100%">
               <BarChart
               width={500}
-              height={300}
+              height={500}
               data={data}
               margin={{
-                  top: 5,
+                  top: 10,
                   right: 30,
                   left: 20,
                   bottom: 5,
@@ -131,27 +129,7 @@ function DashboardAdmParque() {
                   </BarChart>
               </ResponsiveContainer>
   
-              <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                  width={500}
-                  height={300}
-                  data={data}
-                  margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                  }}
-                  >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                  </LineChart>
-              </ResponsiveContainer>
+             
   
           </div>
       </main>

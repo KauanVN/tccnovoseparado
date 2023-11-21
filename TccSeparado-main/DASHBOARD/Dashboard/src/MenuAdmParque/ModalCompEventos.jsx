@@ -17,8 +17,8 @@ import {
   Image,
 } from "@chakra-ui/react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css"; // Importar os estilos padrão
-import { FaTimes } from "react-icons/fa"; // Ícone de fechar
+import "react-datepicker/dist/react-datepicker.css";
+import { FaTimes } from "react-icons/fa";
 
 const ModalCompEventos = ({
   data,
@@ -28,24 +28,30 @@ const ModalCompEventos = ({
   onClose,
   onUpdateData,
 }) => {
-  const [nome, setNome] = useState(dataEdit.nome || "");
-  const [descricao, setDescricao] = useState(dataEdit.descricao || "");
-  const [dataInicio, setDataInicio] = useState(dataEdit.dataInicio || new Date());
-  const [dataTermino, setDataTermino] = useState(dataEdit.dataTermino || new Date());
-  const [localizacao, setLocalizacao] = useState(dataEdit.localizacao || "");
-  const [imagem, setImagem] = useState(dataEdit.imagem || "");
+  const [nome, setNome] = useState("");
+  const [descricao, setDescricao] = useState("");
+  const [dataInicio, setDataInicio] = useState(new Date());
+  const [dataTermino, setDataTermino] = useState(new Date());
+  const [localizacao, setLocalizacao] = useState("");
+  // const [imagem, setImagem] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   var administrador = JSON.parse(localStorage.getItem("administrador"));
 
-
   useEffect(() => {
-    if (!Object.keys(dataEdit)) {
+    if (dataEdit && Object.keys(dataEdit).length > 0) {
+      setNome(dataEdit.nomeEvento || "");
+      setDescricao(dataEdit.descricao || "");
+      setDataInicio(new Date(dataEdit.dataInicio) || new Date());
+      setDataTermino(new Date(dataEdit.dataTermino) || new Date());
+      setLocalizacao(dataEdit.local || "");
+      // setImagem(dataEdit.imagem || "");
+    } else {
       setNome("");
       setDescricao("");
       setDataInicio(new Date());
       setDataTermino(new Date());
       setLocalizacao("");
-      setImagem("");
+      // setImagem("");
     }
   }, [dataEdit]);
 
@@ -54,7 +60,7 @@ const ModalCompEventos = ({
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setImagem(reader.result);
+        // setImagem(reader.result);
       };
       reader.readAsDataURL(file);
     }
@@ -65,15 +71,14 @@ const ModalCompEventos = ({
       console.log("Campos obrigatórios não preenchidos.");
       return;
     }
-    console.log(nome)
     try {
       const token = await administrador.token;
-      const idLazer = await administrador.parque.idLazer
+      const idLazer = await administrador.parque.idLazer;
 
       if (token) {
         const headers = {
           "Content-type": "application/json; charset=UTF-8",
-          "Authorization": `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         };
 
         const response = await fetch(
@@ -82,25 +87,21 @@ const ModalCompEventos = ({
             method: "POST",
             headers: headers,
             body: JSON.stringify({
-
-              "nomeEvento": nome,
-              "local": localizacao,
-              "dataInicio": dataInicio,
-              "dataTermino": dataTermino,
-              "descricao":descricao,
-              "status": 1,
-              "lazer": {
-                "idLazer": idLazer,
-              }
-            })
+              nomeEvento: nome,
+              local: localizacao,
+              dataInicio: dataInicio,
+              dataTermino: dataTermino,
+              descricao: descricao,
+              status: 1,
+              lazer: {
+                idLazer: idLazer,
+              },
+            }),
           }
         );
         if (response.status === 201) {
           alert("evento criado!");
           window.location.reload();
-
-          // Chame onUpdateData se precisar atualizar dados no componente pai
-
         } else {
           console.error("Erro ao cadastrar evento:", response.status);
         }
@@ -108,7 +109,6 @@ const ModalCompEventos = ({
     } catch (error) {
       console.error("Erro ao excluir o usuário:", error);
     }
-
   };
 
   return (
@@ -127,7 +127,7 @@ const ModalCompEventos = ({
           _hover={{
             color: "red.500",
           }}
-          onClick={onClose} // Feche a modal ao clicar no ícone do X
+          onClick={onClose} 
         />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
@@ -169,14 +169,13 @@ const ModalCompEventos = ({
                 calendarClassName="calendar-background"
                 wrapperClassName="transparent-input"
               />
-
               <style>
                 {`
-                .transparent-input .react-datepicker__input-container input {
-                  background-color: rgba(255, 255, 255, 0.5);
-                  border-radius: 5px;
-                }
-              `}
+                  .transparent-input .react-datepicker__input-container input {
+                    background-color: rgba(255, 255, 255, 0.5);
+                    border-radius: 5px;
+                  }
+                `}
               </style>
             </Box>
             <Box>
@@ -186,15 +185,6 @@ const ModalCompEventos = ({
                 value={localizacao}
                 onChange={(e) => setLocalizacao(e.target.value)}
               />
-            </Box>
-            <Box>
-              <FormLabel>Selecione a imagem do Evento</FormLabel>
-              <Input type="file" accept="image/*" onChange={handleImageChange} />
-            </Box>
-            <Box>
-              {imagem && (
-                <Image src={imagem} maxH="200px" alt="Imagem" />
-              )}
             </Box>
           </FormControl>
         </ModalBody>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import 
 { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill, BsTreeFill }
  from 'react-icons/bs'
@@ -12,16 +12,118 @@ import '../App.css'
 
 
 
+
 function Dashboard() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
+  const [usuarios, setUsuarios] = useState([]);
+
 
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle)
   }
 
+  const [parques, setParques] = useState([]);
+
+  useEffect(() => {
+    // Coloque aqui a lógica para buscar os parques da API
+    buscarParques();
+  }, []);
+
+  // Função para buscar os parques
+  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  async function buscarParques() {
+    try {
+      const response = await fetch(
+        "https://tcc-production-e100.up.railway.app/api/lazer",
+        {
+          method: "GET",
+          headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = await response.json();
+        setParques(data);
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
+
+  // Filtrar os parques que não têm administradores associados
+  const parquesSemAdmin = parques.filter(parque => !parque.administradores || parque.administradores.length === 0);
+
+  // Contar a quantidade de parques sem administradores
+  const quantidadeParquesSemAdmin = parquesSemAdmin.length;
+
+  const contarParquesComAdmin = () => {
+    let parquesComAdmin = 0;
+
+    parques.forEach(parque => {
+      if (parque.administradores && parque.administradores.length > 0) {
+        parquesComAdmin++;
+      }
+    });
+
+    return parquesComAdmin;
+  };
+
+  const totalParquesComAdmin = contarParquesComAdmin();
+  async function buscarUsuarios() {
+    try {
+  
+      const token = await administrador.token;
+  
+      if (token) {
+     
+        const headers = {
+          "Content-type": "application/json; charset=UTF-8",
+          Authorization: `Bearer ${token}`,
+        };
+  
+        const response = await fetch(
+          "https://tcc-production-e100.up.railway.app/api/usuario",
+          {
+            method: "GET", 
+            headers: headers,
+          }
+        );
+  
+        if (response.status === 200) {
+          const data = await response.json();
+          console.log("Dados da resposta: p", data);
+          setUsuarios(data);
+        }
+      }
+    } catch (error) {
+      console.error("Erro ao fazer a solicitação:", error);
+    }
+  }
+  useEffect(() => {
+    buscarUsuarios();
+  }, []);
+
+  const totalUsuarios = usuarios.length;
+
+
+
+  const dadosParques = parques.map((parque, index) => ({
+    name: `Parque ${index + 1}`,
+    quantidadeAdministradores: parque.administradores
+      ? parque.administradores.length
+      : 0,
+  }));
+
+  const dadosUsuarios = usuarios.map((usuario, index) => ({
+    name: `Usuário ${index + 1}`,
+    idade: usuario.idade || 0, // Considerando 'idade' como um atributo dos usuários
+  }));
 
     const data = [
         {
+
           name: 'Page A',
           uv: 4000,
           pv: 2400,
@@ -80,78 +182,53 @@ function Dashboard() {
           <div className='main-cards'>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Usuários</h3>
+                      <h3>Total de Usuários</h3>
                       <BsFillArchiveFill className='card_icon'/>
                   </div>
-                  <h1>300</h1>
+                  <h1>{totalUsuarios}</h1>
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Acessos no aplicativo</h3>
+                      <h3>Parques sem Administradores</h3>
                       <BsFillGrid3X3GapFill className='card_icon'/>
                   </div>
-                  <h1>12</h1>
+                  <h1>{quantidadeParquesSemAdmin}</h1>
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Downloads</h3>
+                      <h3>Parques com Administradores</h3>
                       <BsPeopleFill className='card_icon'/>
                   </div>
-                  <h1>33</h1>
-              </div>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>ALERTS</h3>
-                      <BsFillBellFill className='card_icon'/>
-                  </div>
-                  <h1>42</h1>
+                  <h1>{totalParquesComAdmin}</h1>
               </div>
           </div>
   
           <div className='charts'>
-              <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer width='100%' height={300}>
               <BarChart
-              width={500}
-              height={300}
-              data={data}
-              margin={{
-                  top: 5,
-                  right: 30,
-                  left: 20,
-                  bottom: 5,
-              }}
+                data={dadosParques}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
               >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="pv" fill="#8884d8" />
-                  <Bar dataKey="uv" fill="#82ca9d" />
-                  </BarChart>
-              </ResponsiveContainer>
+                <XAxis dataKey='name' />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey='quantidadeAdministradores' fill='#8884d8' />
+              </BarChart>
+            </ResponsiveContainer>
   
-              <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                  width={500}
-                  height={300}
-                  data={data}
-                  margin={{
-                      top: 5,
-                      right: 30,
-                      left: 20,
-                      bottom: 5,
-                  }}
-                  >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-                  <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
-                  </LineChart>
-              </ResponsiveContainer>
+            <ResponsiveContainer width='100%' height={300}>
+              <LineChart
+                data={dadosUsuarios}
+                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+              >
+                <XAxis dataKey='name' />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type='monotone' dataKey='idade' stroke='#82ca9d' />
+              </LineChart>
+            </ResponsiveContainer>
   
           </div>
       </main>
