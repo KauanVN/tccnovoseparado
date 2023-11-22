@@ -217,18 +217,6 @@ function Dashboard() {
               </BarChart>
             </ResponsiveContainer>
   
-            <ResponsiveContainer width='100%' height={300}>
-              <LineChart
-                data={dadosUsuarios}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-              >
-                <XAxis dataKey='name' />
-                <YAxis />
-                <Tooltip />
-                <Legend />
-                <Line type='monotone' dataKey='idade' stroke='#82ca9d' />
-              </LineChart>
-            </ResponsiveContainer>
   
           </div>
       </main>

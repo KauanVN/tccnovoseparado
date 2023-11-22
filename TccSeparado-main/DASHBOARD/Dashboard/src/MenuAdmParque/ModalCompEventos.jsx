@@ -178,14 +178,14 @@ const ModalCompEventos = ({
                 `}
               </style>
             </Box>
+              {/*<FormLabel>Localização</FormLabel>
             <Box>
-              <FormLabel>Localização</FormLabel>
               <Input
                 type="text"
                 value={localizacao}
                 onChange={(e) => setLocalizacao(e.target.value)}
               />
-            </Box>
+                </Box>*/}
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="start">
