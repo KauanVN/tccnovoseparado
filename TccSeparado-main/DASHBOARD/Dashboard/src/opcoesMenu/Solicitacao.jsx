@@ -42,10 +42,11 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
 
     setMessage('Parabens você foi aprovado utilize os dados cadastrados para efetuar o login!')
 
-    emailjs.send(serviceID, templateID, { from_email: dadosAdm.email, message, from_name: 'EmpresaUp' }, userID)
+    emailjs.send(serviceID, templateID, { from_email: dadosAdm.email, message:message, from_name: 'EmpresaUp' }, userID)
     .then((response) => {
       alert("email enviado com sucesso")
       adicionarAdm(dadosAdm)
+     
     })
     .catch((error) => {
       console.error('Erro ao enviar o email:', error);
@@ -128,40 +129,60 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
       }
 
       async function recusarSolicitacao(dadosAdm){
-
-        try{
-          const token = await administrador.token
-          if (token) {
+        const serviceID = 'service_6j4klt9';
+        const templateID = 'template_r1lbe7b';
+        const userID = 'KoyIHsuN6B0BoyfIw';
+    
+        setMessage('sua solicitacao foi reprovada :(')
+    
+        emailjs.send(serviceID, templateID, { from_email: dadosAdm.email, message:'sua solicitacao foi reprovada :(', from_name: 'EmpresaUp' }, userID)
+        .then((response) => {
+          alert("email enviado com sucesso")
+          mudarStatus(dadosAdm)
          
-            const headers = {
-              "Content-type": "application/json; charset=UTF-8",
-              Authorization: `Bearer ${token}`,
-            };
-    
-            const response = await fetch(
-              "https://tcc-production-e100.up.railway.app/api/solicitacoes",
-              {
-                method: "PUT", 
-                headers: headers,
-                body: JSON.stringify({
-                  "idSolicitacoes": dadosAdm.idSolicitacoes,
-                  "email": dadosAdm.email,
-                  "senha": dadosAdm.senha,
-                  "status":2,
-                  "lazer":  {
-                    "idLazer": dadosAdm.lazer.idLazer
-                }}),
-              }
-            );
-    
-            if (response.status === 200) {
-              alert("solicitacao Recusada com sucesso ")
-              window.location.reload();
-            }
-          }
-        } catch (error) {
-          console.error("Erro ao fazer a solicitação:", error);
+        })
+        .catch((error) => {
+          console.error('Erro ao enviar o email:', error);
+        });
+ 
         }
+
+
+        async function mudarStatus(dadosAdm){
+          try{
+            const token = await administrador.token
+            if (token) {
+           
+              const headers = {
+                "Content-type": "application/json; charset=UTF-8",
+                Authorization: `Bearer ${token}`,
+              };
+      
+              const response = await fetch(
+                "https://tcc-production-e100.up.railway.app/api/solicitacoes",
+                {
+                  method: "PUT", 
+                  headers: headers,
+                  body: JSON.stringify({
+                    "idSolicitacoes": dadosAdm.idSolicitacoes,
+                    "email": dadosAdm.email,
+                    "senha": dadosAdm.senha,
+                    "status":2,
+                    "lazer":  {
+                      "idLazer": dadosAdm.lazer.idLazer
+                  }}),
+                }
+              );
+      
+              if (response.status === 200) {
+                alert("solicitacao Recusada com sucesso ")
+                
+                window.location.reload();
+              }
+            }
+          } catch (error) {
+            console.error("Erro ao fazer a solicitação:", error);
+          }
         }
 
   async function buscarSolicitacao() {
