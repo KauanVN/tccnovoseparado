@@ -21,6 +21,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaTimes } from "react-icons/fa";
 
 const ModalCompEventos = ({
+
   data,
   setData,
   dataEdit,
@@ -67,7 +68,7 @@ const ModalCompEventos = ({
   };
 
   const handleSave = async () => {
-    if (!nome || !descricao || !localizacao) {
+    if (!nome || !descricao ) {
       console.log("Campos obrigatórios não preenchidos.");
       return;
     }
@@ -88,7 +89,7 @@ const ModalCompEventos = ({
             headers: headers,
             body: JSON.stringify({
               nomeEvento: nome,
-              local: localizacao,
+              local: administrador.parque.nome,
               dataInicio: dataInicio,
               dataTermino: dataTermino,
               descricao: descricao,
