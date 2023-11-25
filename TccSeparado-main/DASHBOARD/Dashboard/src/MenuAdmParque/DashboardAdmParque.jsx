@@ -23,35 +23,39 @@ function DashboardAdmParque() {
 
     setOpenSidebarToggle(!openSidebarToggle)
   }
-  async function buscarEventos() {
-    try {
-      const token = await administrador.token;
-  
-      if (token) {
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-          Authorization: `Bearer ${token}`,
-        };
-  
-        const response = await fetch(
-          "https://tcc-production-e100.up.railway.app/api/evento/" +
-            administrador.parque.idLazer,
-          {
-            method: "GET",
-            headers: headers,
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const token = await administrador.token;
+
+        if (token) {
+          const headers = {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+          };
+
+          const response = await fetch(
+            "https://tcc-production-e100.up.railway.app/api/evento/" +
+              administrador.parque.idLazer,
+            {
+              method: "GET",
+              headers: headers,
+            }
+          );
+
+          if (response.status === 200) {
+            const data = await response.json();
+            console.log("Dados da resposta: ", data);
+            setEventos(data);
           }
-        );
-  
-        if (response.status === 200) {
-          const data = await response.json();
-          console.log("Dados da resposta: ", data);
-         setEventos(data);
         }
+      } catch (error) {
+        console.error("Erro ao fazer a solicitação:", error);
       }
-    } catch (error) {
-      console.error("Erro ao fazer a solicitação:", error);
     }
-  }
+
+    fetchData();
+  }, []);
   
   const contarEventos = (eventos) => {
     const ativosCount = eventos.filter((evento) => evento.status === 1).length;
@@ -62,11 +66,6 @@ function DashboardAdmParque() {
   useEffect(() => {
     contarEventos(eventos);
   }, [eventos]);
-
-  useEffect(() => {
-    buscarEventos()
-  },);
-
 
 
     const data = [
