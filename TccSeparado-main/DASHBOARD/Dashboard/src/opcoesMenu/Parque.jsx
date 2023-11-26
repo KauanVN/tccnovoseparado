@@ -13,6 +13,7 @@ import swal from "sweetalert";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import ModalCompParque from "./ModalCompParque";
+import { initializeApp } from "firebase/app";
 
 
 function Parque({ data, handleDeleteParque }) {
@@ -80,6 +81,22 @@ function Parque({ data, handleDeleteParque }) {
     setDataEdit({});
     localStorage.setItem("a", "true");
 
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      try {
+        const storageRef = storage.ref();
+        const fileRef = storageRef.child(`images/${file.name}`);
+        await fileRef.put(file);
+        const imageUrl = await fileRef.getDownloadURL();
+        setImagem(imageUrl);
+      } catch (error) {
+        console.error("Erro ao fazer upload da imagem:", error);
+      }
+    }
   };
 
   async function buscarParques() {
