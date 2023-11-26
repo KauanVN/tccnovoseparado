@@ -1,4 +1,4 @@
-// firebase.js
+// firebase.jsx
 import firebase from "firebase/app";
 import "firebase/storage";
 

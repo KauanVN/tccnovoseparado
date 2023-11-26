@@ -1,33 +1,46 @@
-import React from 'react';
-import { BsGrid1X2Fill, BsFillArchiveFill, BsPeopleFill, BsListCheck, BsMenuButtonWideFill, BsBoxArrowRight, BsFillGearFill, BsFileText } from 'react-icons/bs'; // Substituí BsFileEarmarkText por BsFileText
+import React, { useState } from 'react';
+import Modal from 'react-modal';
+import { BsGrid1X2Fill, BsPeopleFill, BsMenuButtonWideFill, BsBoxArrowRight, BsFileText } from 'react-icons/bs';
 import { FaTree } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 
+Modal.setAppElement('#root');
+
 function Sidebar({ openSidebarToggle, OpenSidebar }) {
   const navigate = useNavigate();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
   const openDashboard = () => {
     navigate('/dashboard');
   };
+
   const openParque = () => {
     navigate('/parque');
   };
+
   const openUsuario = () => {
     navigate('/usuario');
   };
+
   const openSolicitacao = () => {
     navigate('/solicitacao');
   };
+
   const openChat = () => {
     navigate('/chat');
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Deseja realmente Deslogar?');
-    if (confirmLogout) {
-      localStorage.clear()
-      window.location.href = 'http://localhost:5173/';
-    }
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = () => {
+    localStorage.clear();
+    window.location.href = 'http://localhost:5173/';
+  };
+
+  const closeModal = () => {
+    setIsLogoutModalOpen(false);
   };
 
   return (
@@ -46,7 +59,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           <BsGrid1X2Fill color="#fff" className="icon" /> Dashboard
         </li>
         <li className="sidebar-list-item" onClick={openParque}>
-        <FaTree color="#fff" className="icon" /> Parques
+          <FaTree color="#fff" className="icon" /> Parques
         </li>
         <li className="sidebar-list-item" onClick={openUsuario}>
           <BsPeopleFill color="#fff" className="icon" /> Usuário
@@ -61,6 +74,38 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
           <BsBoxArrowRight color="#fff" className="icon" /> Sair
         </li>
       </ul>
+
+      <Modal
+        isOpen={isLogoutModalOpen}
+        onRequestClose={closeModal}
+        contentLabel="Confirmar Logout"
+        style={{
+          overlay: {
+            backgroundColor: 'rgba(0, 0, 0, 0.7)',
+            zIndex: '1000',
+          },
+          content: {
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '20px',
+            background: '#fff',
+            borderRadius: '10px',
+            outline: 'none',
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+          },
+        }}
+      >
+        <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Deseja realmente deslogar?</h2>
+        <div className="modal-buttons">
+          <button className="confirm-button" onClick={confirmLogout}>Sim</button>
+          <button className="cancel-button" onClick={closeModal}>Não</button>
+        </div>
+      </Modal>
     </aside>
   );
 }
