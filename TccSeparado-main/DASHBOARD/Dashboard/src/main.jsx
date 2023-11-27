@@ -14,7 +14,7 @@ import Eventos from './MenuAdmParque/Eventos'
 import Informacoes from './MenuAdmParque/Informacoes'
 //import AppChat from './chat-app/src/AppChat.jsx'  
 import { ChakraProvider } from "@chakra-ui/react";
-import AppChat from './chat-app/src/AppChat.jsx'
+
 
 
 const router = createBrowserRouter([
@@ -57,10 +57,7 @@ const router = createBrowserRouter([
           path: "/informacoes",
           element: <Informacoes />,
         },
-        {
-          path: "/chat",
-          element: <AppChat />,
-        },
+      
     ]
   },
 ])

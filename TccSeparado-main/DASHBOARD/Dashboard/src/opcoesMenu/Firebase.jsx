@@ -1,6 +1,5 @@
-// firebase.jsx
-import firebase from "firebase/app";
-import "firebase/storage";
+import { initializeApp } from 'firebase/app';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
    
@@ -14,8 +13,7 @@ const firebaseConfig = {
       
 };
 
-firebase.initializeApp(firebaseConfig);
+const firebaseApp = initializeApp(firebaseConfig);
+const storage = getStorage(firebaseApp);
 
-const storage = firebase.storage();
-
-export { storage, firebase as default };
+export { storage };

@@ -26,9 +26,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
     navigate('/solicitacao');
   };
 
-  const openChat = () => {
-    navigate('/chat');
-  };
+
 
   const handleLogout = () => {
     setIsLogoutModalOpen(true);
@@ -67,9 +65,7 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
         <li className="sidebar-list-item" onClick={openSolicitacao}>
           <BsFileText color="#fff" className="icon" /> Solicitações
         </li>
-        <li className="sidebar-list-item" onClick={openChat}>
-          <BsMenuButtonWideFill color="#fff" className="icon" /> Chat
-        </li>
+      
         <li className="sidebar-list-item" onClick={handleLogout}>
           <BsBoxArrowRight color="#fff" className="icon" /> Sair
         </li>

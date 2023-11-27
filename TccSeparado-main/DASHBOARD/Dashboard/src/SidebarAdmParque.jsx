@@ -15,9 +15,7 @@ function SidebarAdmParque({ openSidebarToggle, OpenSidebar }) {
   const openUsuario = () => {
     navigate('/informacoes');
   };
-  const openChat = () => {
-    navigate('/chat');
-  };
+ 
 
   const handleLogout = () => {
     const confirmLogout = window.confirm('Deseja realmente Deslogar?');
@@ -48,9 +46,7 @@ function SidebarAdmParque({ openSidebarToggle, OpenSidebar }) {
         <li className="sidebar-list-item" onClick={openUsuario}>
           <FaInfoCircle color="#fff" className="icon" /> Informações
         </li>
-        <li className="sidebar-list-item" onClick={openChat}>
-          <BsMenuButtonWideFill color="#fff" className="icon" /> Chat
-        </li>
+       
         <li className="sidebar-list-item" onClick={handleLogout}>
           <BsBoxArrowRight color="#fff" className="icon" /> Sair
         </li>

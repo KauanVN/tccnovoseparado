@@ -17,6 +17,7 @@ import {
   Image,
   Spinner,
 } from '@chakra-ui/react';
+import { uploadImage } from './firebaseService';
 
 
 const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
@@ -32,7 +33,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
   const [uf, setUf] = useState(dataEdit.uf || '');
   const [localidade, setLocalidade] = useState(dataEdit.localidade || '');
   const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
-  const [imagem, setImagem] = useState(dataEdit.imagem || '');
+  const [imagem, setImagem] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
   var administrador = JSON.parse(localStorage.getItem("administrador"));
@@ -65,15 +66,24 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
     }
   }, [isOpen]);
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagem(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    // Faça o upload da imagem
+    uploadImage(
+      file,
+      (progress) => setProgress(progress),
+      (downloadURL) => {
+        // O upload foi concluído, você pode fazer algo com a URL de download aqui
+        console.log('Download URL:', downloadURL);
+        setImagem(downloadURL)
+
+      },
+      (error) => {
+        // Ocorreu um erro durante o upload
+        console.error('Erro de upload:', error);
+      }
+    );
   };
 
   const fetchCEPAndCoordinates = async () => {
@@ -144,7 +154,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
             bairro: bairro,
             cep: cep,
             localidade: localidade,
-            imagem: 'imagem',
+            imagem: imagem,
           }),
         });
 
@@ -185,7 +195,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
             bairro: bairro,
             cep: cep,
             localidade: localidade,
-            imagem: 'imagem',
+            imagem: imagem,
           }),
         });
 
@@ -313,7 +323,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
             </Box>
             <Box>
               <FormLabel>Selecione a imagem do Parque</FormLabel>
-              <Input type="file" accept="image/*" onChange={handleImageChange} />
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
             </Box>
             <Box>
               {imagem && (

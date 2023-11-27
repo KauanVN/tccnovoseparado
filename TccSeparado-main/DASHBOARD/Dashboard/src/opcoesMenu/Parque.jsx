@@ -13,7 +13,7 @@ import swal from "sweetalert";
 import Header from "../Header";
 import Sidebar from "../Sidebar";
 import ModalCompParque from "./ModalCompParque";
-import { initializeApp } from "firebase/app";
+
 
 
 function Parque({ data, handleDeleteParque }) {
@@ -83,21 +83,6 @@ function Parque({ data, handleDeleteParque }) {
 
   };
 
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-
-    if (file) {
-      try {
-        const storageRef = storage.ref();
-        const fileRef = storageRef.child(`images/${file.name}`);
-        await fileRef.put(file);
-        const imageUrl = await fileRef.getDownloadURL();
-        setImagem(imageUrl);
-      } catch (error) {
-        console.error("Erro ao fazer upload da imagem:", error);
-      }
-    }
-  };
 
   async function buscarParques() {
     try {
@@ -150,7 +135,7 @@ function Parque({ data, handleDeleteParque }) {
               "Authorization": `Bearer ${token}`,
             };
             const response = await fetch(
-              `https://tcc-production-e100.up.railway.app/api/lazer/${id}`,
+              `http://localhost:8080/api/lazer/${id}`,
               {
                 method: "DELETE",
                 headers: headers,

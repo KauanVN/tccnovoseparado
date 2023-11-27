@@ -102,6 +102,22 @@ const ModalCompEventos = ({
                 onChange={(e) => setDescricao(e.target.value)}
               />
             </Box>
+            <Box>
+              <FormLabel>Selecione a imagem do Parque</FormLabel>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+            </Box>
+            <Box>
+              {imagem && (
+                <Image
+                  src={imagem}
+                  maxH="200px"
+                  alt="Imagem"
+                />
+              )}
+            </Box>
+            <Box>
+              {isLoading && <Spinner size="lg" color="green" />}
+            </Box>
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="start">
