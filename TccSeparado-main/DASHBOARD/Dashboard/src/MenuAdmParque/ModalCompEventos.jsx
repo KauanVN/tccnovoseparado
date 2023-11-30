@@ -20,6 +20,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaTimes } from "react-icons/fa";
 
+// Certifique-se de importar ou definir a função uploadImage aqui
+import { uploadImage } from '../opcoesMenu/FirebaseService';
+
 const ModalCompEventos = ({
   data,
   setData,
@@ -27,17 +30,16 @@ const ModalCompEventos = ({
   isOpen,
   onClose,
   onUpdateData,
+  Image,
 }) => {
   const [nome, setNome] = useState("");
   const [descricao, setDescricao] = useState("");
   const [dataInicio, setDataInicio] = useState(new Date());
   const [dataTermino, setDataTermino] = useState(new Date());
   const [localizacao, setLocalizacao] = useState("");
-  const [selectedImage, setSelectedImage] = useState(null);
-  // Uncomment the following lines if you want to use image-related state
-  // const [imagem, setImagem] = useState("");
-
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  const [imagem, setImagem] = useState('');
+  const [validationError, setValidationError] = useState(null);
+  const administrador = JSON.parse(localStorage.getItem("administrador"));
 
   useEffect(() => {
     if (dataEdit && Object.keys(dataEdit).length > 0) {
@@ -46,31 +48,38 @@ const ModalCompEventos = ({
       setDataInicio(new Date(dataEdit.dataInicio) || new Date());
       setDataTermino(new Date(dataEdit.dataTermino) || new Date());
       setLocalizacao(dataEdit.local || "");
-      // setImagem(dataEdit.imagem || "");
+      setImagem(dataEdit.imagem || "");
     } else {
       setNome("");
       setDescricao("");
       setDataInicio(new Date());
       setDataTermino(new Date());
       setLocalizacao("");
-      // setImagem("");
     }
   }, [dataEdit]);
 
-  const handleImageChange = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setSelectedImage(file);
-      // Uncomment the following line if you want to use image-related state
-      // setImagem(URL.createObjectURL(file));
-    }
+
+    uploadImage(
+      file,
+      (progress) => setProgress(progress),
+      (downloadURL) => {
+        console.log('Download URL:', downloadURL);
+        setImagem(downloadURL);
+      },
+      (error) => {
+        console.error('Upload Error:', error);
+      }
+    );
   };
 
   const handleSave = async () => {
-    if (!nome || !descricao) {
-      console.log("Campos obrigatórios não preenchidos.");
+    if (!nome || !descricao || dataTermino < dataInicio) {
+      setValidationError("Por favor, preencha todos os campos corretamente.");
       return;
     }
+
     try {
       const token = await administrador.token;
       const idLazer = await administrador.parque.idLazer;
@@ -81,31 +90,28 @@ const ModalCompEventos = ({
           Authorization: `Bearer ${token}`,
         };
 
-        const formData = new FormData();
-        formData.append("nomeEvento", nome);
-        formData.append("local", administrador.parque.nome);
-        formData.append("dataInicio", dataInicio.toISOString());
-        formData.append("dataTermino", dataTermino.toISOString());
-        formData.append("descricao", descricao);
-        formData.append("status", "1");
-        formData.append("lazer[idLazer]", idLazer);
-        // Uncomment the following lines if you want to include the image in the request
-        if (selectedImage) {
-          formData.append("imagem", selectedImage);
-        }
-
         const response = await fetch(
           `https://tcc-production-e100.up.railway.app/api/evento`,
           {
             method: "POST",
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-            body: formData,
+            headers: headers,
+            body: JSON.stringify({
+              nomeEvento: nome,
+              local: administrador.parque.nome,
+              dataInicio: dataInicio,
+              dataTermino: dataTermino,
+              descricao: descricao,
+              status: 1,
+              lazer: {
+                idLazer: idLazer,
+              },
+              imagem: imagem,
+            }),
           }
         );
+
         if (response.status === 201) {
-          alert("evento criado!");
+          alert("Evento criado!");
           window.location.reload();
         } else {
           console.error("Erro ao cadastrar evento:", response.status);
@@ -132,9 +138,24 @@ const ModalCompEventos = ({
           _hover={{
             color: "red.500",
           }}
-          onClick={onClose}
+          onClick={() => {
+            setValidationError(null);
+            onClose();
+          }}
         />
         <ModalBody>
+          {validationError && (
+            <Box
+              bg="red.500"
+              color="white"
+              p={2}
+              mb={4}
+              borderRadius="md"
+              textAlign="center"
+            >
+              {validationError}
+            </Box>
+          )}
           <FormControl display="flex" flexDir="column" gap={4}>
             <Box>
               <FormLabel>Nome</FormLabel>
@@ -155,7 +176,12 @@ const ModalCompEventos = ({
               <FormLabel>Data de Início</FormLabel>
               <DatePicker
                 selected={dataInicio}
-                onChange={(date) => setDataInicio(date)}
+                onChange={(date) => {
+                  setDataInicio(date);
+                  if (date > dataTermino) {
+                    setDataTermino(date);
+                  }
+                }}
                 className="custom-datepicker"
                 placeholderText="Selecione uma data"
                 dateFormat="dd/MM/yyyy"
@@ -173,6 +199,7 @@ const ModalCompEventos = ({
                 dateFormat="dd/MM/yyyy"
                 calendarClassName="calendar-background"
                 wrapperClassName="transparent-input"
+                minDate={dataInicio}
               />
               <style>
                 {`
@@ -184,13 +211,17 @@ const ModalCompEventos = ({
               </style>
             </Box>
             <Box>
-              {/* Uncomment the following lines if you want to include the image input */}
-              <FormLabel>Imagem</FormLabel>
-              <Input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-              />
+              <FormLabel>Selecione a imagem do Evento</FormLabel>
+              <Input type="file" accept="image/*" onChange={handleFileChange} />
+            </Box>
+            <Box>
+              {imagem && (
+                <Image
+                  src={imagem}
+                  maxH="200px"
+                  alt="Imagem"
+                />
+              )}
             </Box>
           </FormControl>
         </ModalBody>

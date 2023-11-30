@@ -98,12 +98,25 @@ function Sidebar({ openSidebarToggle, OpenSidebar }) {
       >
         <h2 style={{ fontSize: '24px', marginBottom: '20px' }}>Deseja realmente deslogar?</h2>
         <div className="modal-buttons">
-          <button className="confirm-button" onClick={confirmLogout}>Sim</button>
-          <button className="cancel-button" onClick={closeModal}>Não</button>
+          <button
+            className="confirm-button"
+            style={{ backgroundColor: '#2ecc71', color: '#fff', padding: '10px 20px', marginRight: '10px', border: '1px solid #27ae60', borderRadius: '5px' }}
+            onClick={confirmLogout}
+          >
+            Sim
+          </button>
+          <button
+            className="cancel-button"
+            style={{ backgroundColor: '#e74c3c', color: '#fff', padding: '10px 20px', border: '1px solid #c0392b', borderRadius: '5px' }}
+            onClick={closeModal}
+          >
+            Não
+          </button>
         </div>
       </Modal>
     </aside>
   );
 }
+
 
 export default Sidebar;

@@ -138,9 +138,9 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                   <Th>Descrição</Th>
                   <Th>Data de Inicio</Th>
                   <Th>Data de Término</Th>
-                  <Th>Imagem</Th>
                   <Th>Editar</Th>
                   <Th>Excluir</Th>
+                  <Th>Imagem</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -151,14 +151,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                     <Td>{item.descricao}</Td>
                     <Td>{item.dataInicio}</Td>
                     <Td>{item.dataTermino}</Td>
-                    <Td>
-                      {/* Replace "item.local" with an image */}
-                      <img
-                        src={`url/to/your/image/${item.nomeEvento}.png`} // Adjust the image URL accordingly
-                        alt={item.nomeEvento}
-                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
-                      />
-                    </Td>
+                    <Td>{item.local}</Td>
                     <Td>
                       <EditIcon
                         fontSize={20}
@@ -170,6 +163,11 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                         fontSize={20}
                         onClick={() => handleDeleteItem(item.idEvento)}
                       />
+                       <img
+                    className="imagemParque"
+                    src={item.imagem}
+                    alt={`Imagem de ${item.name}`}
+                  />
                     </Td>
                   </Tr>
                 ))}
