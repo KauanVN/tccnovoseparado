@@ -49,7 +49,6 @@
         setDescricao(dataEdit.descricao || "");
         setDataInicio(new Date(dataEdit.dataInicio) || new Date());
         setDataTermino(new Date(dataEdit.dataTermino) || new Date());
-        setImagem(dataEdit.imagem || "");
       } else {
         setNome("");
         setDescricao("");
@@ -89,7 +88,7 @@
       try {
         const token = await administrador.token;
         const idLazer = await administrador.parque.idLazer;
-
+        console.log(imagemState)
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
@@ -107,11 +106,11 @@
                 dataInicio: dataInicio,
                 dataTermino: dataTermino,
                 descricao: descricao,
+                imagem:imagemState,
                 status: 1,
                 lazer: {
                   idLazer: idLazer,
                 },
-                imagem: imagem,
               }),
             }
           );
