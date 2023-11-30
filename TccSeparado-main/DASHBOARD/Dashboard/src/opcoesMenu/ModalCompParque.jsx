@@ -16,11 +16,11 @@ import {
   Button,
   Image,
   Spinner,
+  Progress,  // Adicionado para a barra de progresso
 } from '@chakra-ui/react';
 import { uploadImage } from './firebaseService';
 
-
-const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
+const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing }) => {
   const [idLazer, setIdLazer] = useState(dataEdit.idLazer || '');
   const [nome, setNome] = useState(dataEdit.nome || '');
   const [descricao, setDescricao] = useState(dataEdit.descricao || '');
@@ -35,7 +35,8 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
   const [admin, setAdmin] = useState(dataEdit.admin || 'Não');
   const [imagem, setImagem] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [uploadProgress, setUploadProgress] = useState(0);  // Estado para rastrear o progresso de upload
+
   var administrador = JSON.parse(localStorage.getItem("administrador"));
 
   useEffect(() => {
@@ -45,8 +46,6 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
     }
   }, [data, dataEdit]);
 
-
-  
   useEffect(() => {
     if (!isOpen) {
       // Reset the form when the modal is closed
@@ -72,16 +71,22 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
     // Faça o upload da imagem
     uploadImage(
       file,
-      (progress) => setProgress(progress),
+      (progress) => {
+        setUploadProgress(progress);  // Atualiza o progresso de upload
+        setIsLoading(true);  // Inicia o carregamento enquanto o progresso está sendo atualizado
+      },
       (downloadURL) => {
         // O upload foi concluído, você pode fazer algo com a URL de download aqui
         console.log('Download URL:', downloadURL);
-        setImagem(downloadURL)
-
+        setImagem(downloadURL);
+        setIsLoading(false);  // Finaliza o carregamento após o upload ser concluído
+        setUploadProgress(0);  // Reinicia o progresso
       },
       (error) => {
         // Ocorreu um erro durante o upload
         console.error('Erro de upload:', error);
+        setIsLoading(false);  // Finaliza o carregamento em caso de erro
+        setUploadProgress(0);  // Reinicia o progresso
       }
     );
   };
@@ -324,6 +329,7 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing  }) => {
             <Box>
               <FormLabel>Selecione a imagem do Parque</FormLabel>
               <Input type="file" accept="image/*" onChange={handleFileChange} />
+              {isLoading && <Progress value={uploadProgress} size="sm" />}
             </Box>
             <Box>
               {imagem && (
