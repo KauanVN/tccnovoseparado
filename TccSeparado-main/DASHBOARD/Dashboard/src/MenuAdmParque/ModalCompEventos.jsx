@@ -21,7 +21,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import { FaTimes } from "react-icons/fa";
 
 const ModalCompEventos = ({
-
   data,
   setData,
   dataEdit,
@@ -34,8 +33,10 @@ const ModalCompEventos = ({
   const [dataInicio, setDataInicio] = useState(new Date());
   const [dataTermino, setDataTermino] = useState(new Date());
   const [localizacao, setLocalizacao] = useState("");
-  // const [imagem, setImagem] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
+  // Uncomment the following lines if you want to use image-related state
+  // const [imagem, setImagem] = useState("");
+
   var administrador = JSON.parse(localStorage.getItem("administrador"));
 console.log(administrador)
   useEffect(() => {
@@ -59,16 +60,14 @@ console.log(administrador)
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        // setImagem(reader.result);
-      };
-      reader.readAsDataURL(file);
+      setSelectedImage(file);
+      // Uncomment the following line if you want to use image-related state
+      // setImagem(URL.createObjectURL(file));
     }
   };
 
   const handleSave = async () => {
-    if (!nome || !descricao ) {
+    if (!nome || !descricao) {
       console.log("Campos obrigatórios não preenchidos.");
       return;
     }
@@ -82,22 +81,27 @@ console.log(administrador)
           Authorization: `Bearer ${token}`,
         };
 
+        const formData = new FormData();
+        formData.append("nomeEvento", nome);
+        formData.append("local", administrador.parque.nome);
+        formData.append("dataInicio", dataInicio.toISOString());
+        formData.append("dataTermino", dataTermino.toISOString());
+        formData.append("descricao", descricao);
+        formData.append("status", "1");
+        formData.append("lazer[idLazer]", idLazer);
+        // Uncomment the following lines if you want to include the image in the request
+        if (selectedImage) {
+          formData.append("imagem", selectedImage);
+        }
+
         const response = await fetch(
           `https://tcc-production-e100.up.railway.app/api/evento`,
           {
             method: "POST",
-            headers: headers,
-            body: JSON.stringify({
-              nomeEvento: nome,
-              local: administrador.parque.nome,
-              dataInicio: dataInicio,
-              dataTermino: dataTermino,
-              descricao: descricao,
-              status: 1,
-              lazer: {
-                idLazer: idLazer,
-              },
-            }),
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            body: formData,
           }
         );
         if (response.status === 201) {
@@ -128,7 +132,7 @@ console.log(administrador)
           _hover={{
             color: "red.500",
           }}
-          onClick={onClose} 
+          onClick={onClose}
         />
         <ModalBody>
           <FormControl display="flex" flexDir="column" gap={4}>
@@ -179,14 +183,15 @@ console.log(administrador)
                 `}
               </style>
             </Box>
-              {/*<FormLabel>Localização</FormLabel>
             <Box>
+              {/* Uncomment the following lines if you want to include the image input */}
+              <FormLabel>Imagem</FormLabel>
               <Input
-                type="text"
-                value={localizacao}
-                onChange={(e) => setLocalizacao(e.target.value)}
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
               />
-                </Box>*/}
+            </Box>
           </FormControl>
         </ModalBody>
         <ModalFooter justifyContent="start">

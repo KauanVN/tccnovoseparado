@@ -138,7 +138,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                   <Th>Descrição</Th>
                   <Th>Data de Inicio</Th>
                   <Th>Data de Término</Th>
-                  <Th>Localização</Th>
+                  <Th>Imagem</Th>
                   <Th>Editar</Th>
                   <Th>Excluir</Th>
                 </Tr>
@@ -151,7 +151,14 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                     <Td>{item.descricao}</Td>
                     <Td>{item.dataInicio}</Td>
                     <Td>{item.dataTermino}</Td>
-                    <Td>{item.local}</Td>
+                    <Td>
+                      {/* Replace "item.local" with an image */}
+                      <img
+                        src={`url/to/your/image/${item.nomeEvento}.png`} // Adjust the image URL accordingly
+                        alt={item.nomeEvento}
+                        style={{ width: '40px', height: '40px', objectFit: 'cover' }}
+                      />
+                    </Td>
                     <Td>
                       <EditIcon
                         fontSize={20}
