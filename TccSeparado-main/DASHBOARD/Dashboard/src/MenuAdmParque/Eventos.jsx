@@ -144,34 +144,33 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                 </Tr>
               </Thead>
               <Tbody>
-                {dados && dados.map((item, index) => (
-                  <Tr key={index} cursor="pointer">
-                    <Td>{item.idEvento}</Td>
-                    <Td>{item.nomeEvento}</Td>
-                    <Td>{item.descricao}</Td>
-                    <Td>{item.dataInicio}</Td>
-                    <Td>{item.dataTermino}</Td>
-                    <Td>{item.local}</Td>
-                    <Td>
-                      <EditIcon
-                        fontSize={20}
-                        onClick={() => handleEditItem(item)}
-                      />
-                    </Td>
-                    <Td p={0}>
-                      <DeleteIcon
-                        fontSize={20}
-                        onClick={() => handleDeleteItem(item.idEvento)}
-                      />
-                       <img
-                    className="imagemParque"
-                    src={item.imagem}
-                    alt={`Imagem de ${item.name}`}
-                  />
-                    </Td>
-                  </Tr>
-                ))}
-              </Tbody>
+  {dados &&
+    dados.map((item, index) => (
+      <Tr key={index} cursor="pointer">
+        <Td>{item.idEvento}</Td>
+        <Td>{item.nomeEvento}</Td>
+        <Td>{item.descricao}</Td>
+        <Td>{item.dataInicio}</Td>
+        <Td>{item.dataTermino}</Td>
+        <Td>
+          <EditIcon fontSize={20} onClick={() => handleEditItem(item)} />
+        </Td>
+        <Td>
+          <DeleteIcon
+            fontSize={20}
+            onClick={() => handleDeleteItem(item.idEvento)}
+          />
+        </Td>
+        <Td p={0}>
+          <img
+            className="imagemParque"
+            src={item.imagem}
+            alt={`Imagem de ${item.name}`}
+          />
+        </Td>
+      </Tr>
+    ))}
+</Tbody>
             </Table>
           </div>
         </main>
