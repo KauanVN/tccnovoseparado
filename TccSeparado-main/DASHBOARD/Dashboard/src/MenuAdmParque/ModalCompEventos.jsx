@@ -37,7 +37,7 @@ const ModalCompEventos = ({
   // const [imagem, setImagem] = useState("");
   const [selectedImage, setSelectedImage] = useState(null);
   var administrador = JSON.parse(localStorage.getItem("administrador"));
-
+console.log(administrador)
   useEffect(() => {
     if (dataEdit && Object.keys(dataEdit).length > 0) {
       setNome(dataEdit.nomeEvento || "");
