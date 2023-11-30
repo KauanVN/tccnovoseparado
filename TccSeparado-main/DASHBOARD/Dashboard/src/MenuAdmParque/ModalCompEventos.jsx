@@ -37,18 +37,9 @@ const ModalCompEventos = ({
   const [dataInicio, setDataInicio] = useState(new Date());
   const [dataTermino, setDataTermino] = useState(new Date());
   const [localizacao, setLocalizacao] = useState("");
-
   const [imagem, setImagem] = useState('');
   const [validationError, setValidationError] = useState(null);
   const administrador = JSON.parse(localStorage.getItem("administrador"));
-
-
-  const [selectedImage, setSelectedImage] = useState(null);
-  // Uncomment the following lines if you want to use image-related state
-  // const [imagem, setImagem] = useState("");
-
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
-console.log(administrador)
 
   useEffect(() => {
     if (dataEdit && Object.keys(dataEdit).length > 0) {
