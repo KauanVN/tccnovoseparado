@@ -80,44 +80,57 @@
     };
 
     const handleSave = async () => {
-      if (!nome || !descricao || dataTermino < dataInicio) {
+      if (!nome || !descricao || dataTermino < dataInicio || !imagemState) {
         setValidationError("Por favor, preencha todos os campos corretamente.");
         return;
       }
-
+    
       try {
         const token = await administrador.token;
         const idLazer = await administrador.parque.idLazer;
-        console.log(imagemState)
+        console.log(imagemState);
+    
         if (token) {
           const headers = {
             "Content-type": "application/json; charset=UTF-8",
             Authorization: `Bearer ${token}`,
           };
-
-          const response = await fetch(
-            `https://tcc-production-e100.up.railway.app/api/evento`,
-            {
-              method: "POST",
-              headers: headers,
-              body: JSON.stringify({
-                nomeEvento: nome,
-                local: administrador.parque.nome,
-                dataInicio: dataInicio,
-                dataTermino: dataTermino,
-                descricao: descricao,
-                imagem:imagemState,
-                status: 1,
-                lazer: {
-                  idLazer: idLazer,
-                },
-              }),
+    
+          let endpoint = 'https://tcc-production-e100.up.railway.app/api/evento';
+          let method = 'POST';
+          let eventId = '';
+    
+          if (dataEdit && Object.keys(dataEdit).length > 0) {
+            eventId = dataEdit.id; // Assuming you have an 'id' field for events
+            endpoint += `/${eventId}`;
+            method = 'PUT';
+          }
+    
+          const response = await fetch(endpoint, {
+            method: method,
+            headers: headers,
+            body: JSON.stringify({
+              nomeEvento: nome,
+              local: administrador.parque.nome,
+              dataInicio: dataInicio,
+              dataTermino: dataTermino,
+              descricao: descricao,
+              imagem: imagemState,
+              status: 1,
+              lazer: {
+                idLazer: idLazer,
+              },
+            }),
+          });
+    
+          if (response.status === 201 || response.status === 200) {
+            if (dataEdit && Object.keys(dataEdit).length > 0) {
+              alert("Evento atualizado!");
+              onUpdateData(eventId); // Assuming you have a function to update the data after editing
+            } else {
+              alert("Evento criado!");
             }
-          );
-
-          if (response.status === 201) {
-            alert("Evento criado!");
-            window.location.reload();
+            onClose();
           } else {
             console.error("Erro ao cadastrar evento:", response.status);
           }
@@ -126,6 +139,7 @@
         console.error("Erro ao excluir o usuário:", error);
       }
     };
+
 
     return (
       <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">

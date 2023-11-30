@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import 
 { BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill, BsTreeFill }
  from 'react-icons/bs'
+ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
  import 
  { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } 
  from 'recharts';
@@ -13,10 +14,13 @@ import '../App.css'
 
 
 
+
 function Dashboard() {
   const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
   const [usuarios, setUsuarios] = useState([]);
-
+  const [eventos, setEventos] = useState([]);
+  const [ativos, setAtivos] = useState(0);
+  const [inativos, setInativos] = useState(0);
 
   const OpenSidebar = () => {
     setOpenSidebarToggle(!openSidebarToggle)
@@ -105,6 +109,61 @@ function Dashboard() {
     buscarUsuarios();
   }, []);
 
+  useEffect(() => {
+    contarEventos(eventos);
+  }, [eventos]);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const token = await administrador.token;
+  
+        if (token) {
+          const headers = {
+            "Content-type": "application/json; charset=UTF-8",
+            Authorization: `Bearer ${token}`,
+          };
+  
+          // Inicializa um array para armazenar todos os eventos
+          let allEvents = [];
+  
+          // Itera sobre os parques para buscar os eventos de cada um
+          for (const parque of parques) {
+            const response = await fetch(
+              `https://tcc-production-e100.up.railway.app/api/evento/${parque.idLazer}`,
+              {
+                method: "GET",
+                headers: headers,
+              }
+            );
+  
+            if (response.status === 200) {
+              const data = await response.json();
+              allEvents = allEvents.concat(data); // Adiciona os eventos ao array
+            }
+          }
+  
+          // Define todos os eventos encontrados
+          setEventos(allEvents);
+        }
+      } catch (error) {
+        console.error("Erro ao fazer a solicitação:", error);
+      }
+    }
+  
+    fetchData();
+  }, [administrador.token, parques]);
+
+  const contarEventos = (eventos) => {
+    const ativosCount = eventos.filter((evento) => evento.status === 1).length;
+    const inativosCount = eventos.filter((evento) => evento.status === 2).length;
+    setAtivos(ativosCount);
+    setInativos(inativosCount);
+  };
+  useEffect(() => {
+    contarEventos(eventos);
+  }, [eventos]);
+
   const totalUsuarios = usuarios.length;
 
 
@@ -189,8 +248,8 @@ function Dashboard() {
               </div>
               <div className='card'>
                   <div className='card-inner'>
-                      <h3>Parques sem Administradores</h3>
-                      <BsFillGrid3X3GapFill className='card_icon'/>
+                      <h3>Parques sem Administradores</h3>  
+                      <BsPeopleFill className='card_icon'/>
                   </div>
                   <h1>{quantidadeParquesSemAdmin}</h1>
               </div>
@@ -201,7 +260,27 @@ function Dashboard() {
                   </div>
                   <h1>{totalParquesComAdmin}</h1>
               </div>
-          </div>
+              <div className='row'>
+            <div className='col-sm-6'>
+              <div className='card'>
+                <div className='card-inner'>
+                  <h3>Eventos Ativos</h3>
+                  <FaCheckCircle className='card_icon' />
+                </div>
+                <h1>{ativos}</h1>
+              </div>
+            </div>
+            <div className='col-sm-6'>
+              <div className='card'>
+                <div className='card-inner'>
+                  <h3>Eventos Inativos</h3>
+                  <FaTimesCircle className='card_icon' />
+                </div>
+                <h1>{inativos}</h1>
+              </div>
+            </div>
+            </div>
+            </div>
   
           <div className='charts'>
           <ResponsiveContainer width='100%' height={300}>
