@@ -7,7 +7,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
   const [formData, setFormData] = useState({
     email: '',
     senha: '',
-    parque: 0, 
+    parque: 0,
   });
 
   const [isIncomplete, setIsIncomplete] = useState(false); // Adicionando estado para controle de campo incompleto
@@ -16,24 +16,24 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
 
   async function buscarParques() {
     try {
-        const headers = {
-          "Content-type": "application/json; charset=UTF-8",
-        };
+      const headers = {
+        "Content-type": "application/json; charset=UTF-8",
+      };
 
-        const response = await fetch(
-          "https://tcc-production-e100.up.railway.app/api/lazer",
-          {
-            method: "GET", 
-            headers: headers,
-          }
-        );
-
-        if (response.status === 200) {
-          const data = await response.json();
-          console.log("Dados da resposta: p", data);
-          setDados(data);
+      const response = await fetch(
+        "https://tcc-production-e100.up.railway.app/api/lazer",
+        {
+          method: "GET",
+          headers: headers,
         }
-      
+      );
+
+      if (response.status === 200) {
+        const data = await response.json();
+        console.log("Dados da resposta: p", data);
+        setDados(data);
+      }
+
     } catch (error) {
       console.error("Erro ao fazer a solicitação:", error);
     }
@@ -49,27 +49,28 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
       body: JSON.stringify({
         "email": data.email,
         "senha": data.senha,
-        "lazer":  {
+        "lazer": {
           "idLazer": data.parque
-      }}),
+        }
+      }),
       headers: {
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
-    .then(response => {
-      console.log(response.status)
-      if (response.status === 201) {
-        return alert('ATENÇÃO!\nEsta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login');
-        ;
-      } else {
-        return   alert('ATENÇÃO!\nA solicitação falhou tente novamente mais tarde ou verifique se este email ja foi utilizado'); 
+      .then(response => {
+        console.log(response.status)
+        if (response.status === 201) {
+          return alert('ATENÇÃO!\nEsta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login');
+          ;
+        } else {
+          return alert('ATENÇÃO!\nA solicitação falhou tente novamente mais tarde ou verifique se este email ja foi utilizado');
 
-      }
-    })
-    .catch(error => {
-      console.error("Erro durante a requisição:", error);
-      alert("Erro");
-    });
+        }
+      })
+      .catch(error => {
+        console.error("Erro durante a requisição:", error);
+        alert("Erro");
+      });
   }
 
   const handleInputChange = (event) => {
@@ -91,7 +92,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
       setIsIncomplete(true);
     } else {
       // Aqui você pode adicionar a lógica para lidar com o envio do formulário
-    console.log('Dados do formulário:', formData);
+      console.log('Dados do formulário:', formData);
       setCloseModal();
       Solicitarlogin(formData)
     }
@@ -100,12 +101,12 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
   return (
     <div>
       {isOpen && (
-        <div className="BACKGROUND_STYLE"> 
-          <div className="MODAL_STYLE"> 
+        <div className="BACKGROUND_STYLE">
+          <div className="MODAL_STYLE">
             <FaTimes className="CLOSE_ICON_STYLE" onClick={setCloseModal} />
             <div style={{ display: 'flex' }}>
-              <div className="PARTE_ESQUERDA_STYLE"> 
-                <h3 className="TEXTO_STYLE">ﾠBem-Vindoﾠﾠ</h3> 
+              <div className="PARTE_ESQUERDA_STYLE">
+                <h3 className="TEXTO_STYLE">ﾠBem-Vindoﾠﾠ</h3>
                 <img
                   src={Logo}
                   className="IMG_STYLE"
@@ -114,11 +115,11 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                 />
                 <p className="TEXTO2_STYLE">LINKED PARK</p>
               </div>
-              <div className="PARTE_DIREITA_STYLE"> 
-                <h3 className="TEXTO3_STYLE">SOLICITAR LOGIN</h3> 
-                <h3 className="TEXTO_STYLE">ﾠ</h3> 
+              <div className="PARTE_DIREITA_STYLE">
+                <h3 className="TEXTO3_STYLE">SOLICITAR LOGIN</h3>
+                <h3 className="TEXTO_STYLE">ﾠ</h3>
                 <form onSubmit={handleSubmit}>
-                  <div className="INPUT_CONTAINER_STYLE"> 
+                  <div className="INPUT_CONTAINER_STYLE">
                     <FaEnvelope className="ICON_STYLE" /> {/* Ícone do envelope */}
                     <input
                       className="INPUT_STYLE"
@@ -129,7 +130,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                       onChange={handleInputChange}
                     />
                   </div>
-                  <div className="INPUT_CONTAINER_STYLE"> 
+                  <div className="INPUT_CONTAINER_STYLE">
                     <FaLock className="ICON_STYLE" /> {/* Ícone do cadeado */}
                     <input
                       className="INPUT_STYLE"
@@ -153,26 +154,46 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                       className="SHOW_PASSWORD_BUTTON_STYLE"
                       onClick={toggleMostrarSenha}
                     >
-                    {mostrarSenha ? '◠ Ocultar' : ' ⦾ Mostrar'}
+                      {mostrarSenha ? '◠ Ocultar' : ' ⦾ Mostrar'}
                     </button>
                   </div>
-                  <div className="INPUT_CONTAINER_STYLE"> 
+                  <div className="INPUT_CONTAINER_STYLE">
                     <FaTree className="ICON_STYLE" /> {/* Ícone da árvore */}
                     <select
-                      className="INPUT_STYLE" 
+                      className="INPUT_STYLE"
                       name="parque"
                       value={formData.parque}
                       onChange={handleInputChange}
                     >
-                      <option value="" disabled>Selecione um parque</option>
+                      <option value="" disabled>
+                        Selecione um parque
+                      </option>
                       {dados.map((parque, index) => (
                         <option key={index} value={parque.idLazer}>
                           {parque.nome}
                         </option>
                       ))}
+                      <option value="outro">
+                        Escolha o seu parque
+                      </option>
                     </select>
+
+                    {formData.parque === 'outro' && (
+                      <div className="INPUT_CONTAINER_STYLE">
+                        <FaTree className="ICON_STYLE" /> {/* Icon for the tree */}
+                        <input
+                          className="INPUT_STYLE"
+                          type="text"
+                          placeholder="Nome do seu parque"
+                          name="parqueNome"
+                          value={formData.parqueNome || ''}
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                    )}
                   </div>
-                  <div className="BOTAO_CONTAINER_STYLE" style={{ textAlign: 'center' }}> 
+                  <div className="BOTAO_CONTAINER_STYLE" style={{ textAlign: 'center' }}>
+                    <p className="AVISO_STYLE">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</p>
                     <button className="BUTTON_STYLE">
                       ENVIAR
                     </button>
@@ -181,7 +202,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                     <p className="AVISO_STYLE">Por favor, preencha todos os campos.</p>
                   )}
                   <p className="AVISO_STYLE">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</p>
-                  {/* Espaço para os inputs */} 
+                  {/* Espaço para os inputs */}
                 </form>
               </div>
             </div>
