@@ -234,6 +234,7 @@ function Parque({ data, handleDeleteParque }) {
                   <Th>Nome</Th>
                   <Th>Descrição</Th>
                   <Th>Endereço</Th>
+                  <Th>CEP</Th>
                   <Th>Latitude</Th>
                   <Th>Longitude</Th>
                   <Th>Categoria</Th>
@@ -250,6 +251,7 @@ function Parque({ data, handleDeleteParque }) {
                     <Td>{item.nome}</Td>
                     <Td>{item.descricao}</Td>
                     <Td>{item.endereco}</Td>
+                    <Td>{item.cep}</Td>
                     <Td>{item.latitude}</Td>
                     <Td>{item.longetude}</Td>
                     <Td>{item.categoria}</Td>
