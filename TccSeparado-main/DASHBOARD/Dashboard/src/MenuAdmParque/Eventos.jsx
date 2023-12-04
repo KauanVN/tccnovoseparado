@@ -52,6 +52,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
         if (response.status === 200) {
           const data = await response.json();
           setDados(data);
+          console.log(data)
         }
       }
     } catch (error) {
