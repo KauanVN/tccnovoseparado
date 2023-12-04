@@ -19,6 +19,7 @@ function DashboardAdmParque() {
   const [eventos, setEventos] = useState([]);
   const [ativos, setAtivos] = useState(0);
   const [inativos, setInativos] = useState(0);
+  const [totalInteressados, setTotalInteressados] = useState(0);
   const OpenSidebar = () => {
 
     setOpenSidebarToggle(!openSidebarToggle)
@@ -57,6 +58,14 @@ function DashboardAdmParque() {
     fetchData();
   }, []);
   
+  useEffect(() => {
+    let total = 0;
+    eventos.forEach((evento) => {
+      total += evento.usuarios.length;
+    });
+    setTotalInteressados(total);
+  }, [eventos]);
+
   const contarEventos = (eventos) => {
     const ativosCount = eventos.filter((evento) => evento.status === 1).length;
     const inativosCount = eventos.filter((evento) => evento.status === 2).length;
@@ -102,6 +111,13 @@ function DashboardAdmParque() {
                       <BsFillGrid3X3GapFill className='card_icon'/>
                   </div>
                   <h1>{inativos}</h1>
+              </div>
+              <div className='card'>
+                  <div className='card-inner'>
+                      <h3>Total de Usuarios Interessados <strong>(geral)</strong></h3>
+                      <BsFillGrid3X3GapFill className='card_icon'/>
+                  </div>
+                  <h1>{totalInteressados}</h1>
               </div>
           </div>
   

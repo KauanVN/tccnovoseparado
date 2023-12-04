@@ -141,6 +141,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                   <Th>Editar</Th>
                   <Th>Excluir</Th>
                   <Th>Imagem</Th>
+                  <Th>Usuários Interessados</Th>
                 </Tr>
               </Thead>
               <Tbody>
@@ -168,6 +169,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
             alt={`Imagem de ${item.name}`}
           />
         </Td>
+        <Td>{item.usuarios.length}</Td>
       </Tr>
     ))}
 </Tbody>
