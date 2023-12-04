@@ -138,6 +138,8 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                   <Th>Descrição</Th>
                   <Th>Data de Inicio</Th>
                   <Th>Data de Término</Th>
+                  <Th>Horario de Inicio</Th>
+                  <Th>Horairo de Término</Th>
                   <Th>Editar</Th>
                   <Th>Excluir</Th>
                   <Th>Imagem</Th>
