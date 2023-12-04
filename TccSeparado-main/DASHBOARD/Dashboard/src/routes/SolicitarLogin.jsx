@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { FaTimes, FaEnvelope, FaLock, FaTree } from 'react-icons/fa'; // Importe os ícones necessários do FontAwesome
+import { FaTimes, FaEnvelope, FaLock, FaTree, FaPagelines } from 'react-icons/fa'; // Importe os ícones necessários do FontAwesome
 import Logo from "../img/logoLinkedParkSemFundo.png";
 import '../css/Login.css';
 
@@ -177,10 +177,13 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                         Escolha o seu parque
                       </option>
                     </select>
-
                     {formData.parque === 'outro' && (
-                      <div className="INPUT_CONTAINER_STYLE">
-                        <FaTree className="ICON_STYLE" /> {/* Icon for the tree */}
+                      <div className="INPUT_CONTAINER_STYLE" style={{ display: 'flex', alignItems: 'center' }}>
+                        {formData.parqueNome && formData.parqueNome.toLowerCase().includes('árvore') ? (
+                          <FaTree className="ICON_STYLE" style={{ marginLeft: '-2px', marginRight: '-8px' }} />
+                        ) : (
+                          <FaPagelines className="ICON_STYLE" style={{ marginLeft: '-15px', marginRight: '-80px' }} />
+                        )}
                         <input
                           className="INPUT_STYLE"
                           type="text"
@@ -188,9 +191,12 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                           name="parqueNome"
                           value={formData.parqueNome || ''}
                           onChange={handleInputChange}
+                          style={{ marginLeft: '-20px' }}
                         />
                       </div>
+
                     )}
+
                   </div>
                   <div className="BOTAO_CONTAINER_STYLE" style={{ textAlign: 'center' }}>
                     <p className="AVISO_STYLE">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</p>
@@ -201,7 +207,7 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
                   {isIncomplete && ( // Exibe a mensagem de aviso se algum campo estiver em branco
                     <p className="AVISO_STYLE">Por favor, preencha todos os campos.</p>
                   )}
-                  <p className="AVISO_STYLE">ㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤㅤ</p>
+                  <p className="AVISO_STYLE"></p>
                   {/* Espaço para os inputs */}
                 </form>
               </div>
