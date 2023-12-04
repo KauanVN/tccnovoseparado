@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   useDisclosure,
   Table,
@@ -27,9 +27,8 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   const [dataEdit, setDataEdit] = useState({});
   const [dados, setDados] = useState([]);
   const [isDeleteAlertOpen, setIsDeleteAlertOpen] = useState(false);
-  const [editedData, setEditedData] = useState({}); // Novo estado para armazenar os dados editados
-  const cancelRef = React.useRef();
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  const administrador = JSON.parse(localStorage.getItem("administrador"));
+  const cancelRef = useRef();
 
   async function buscarEventos() {
     try {
@@ -43,7 +42,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
 
         const response = await fetch(
           "https://tcc-production-e100.up.railway.app/api/evento/" +
-            administrador.parque.idLazer,
+          administrador.parque.idLazer,
           {
             method: "GET",
             headers: headers,
@@ -52,7 +51,6 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
 
         if (response.status === 200) {
           const data = await response.json();
-          console.log("Dados da resposta: p", data);
           setDados(data);
         }
       }
@@ -66,7 +64,6 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   }, []);
 
   const handleEditItem = (item) => {
-    setEditedData(item); // Armazena os dados de edição
     setDataEdit(item);
     onOpen();
   };
@@ -74,7 +71,6 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
   const handleDeleteItem = async (id) => {
     try {
       const token = await administrador.token;
-      const idLazer = await administrador.parque.idLazer;
 
       if (token) {
         const headers = {
@@ -89,20 +85,22 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
             headers: headers,
           }
         );
+
         if (response.status === 204) {
-          alert("evento deletado!");
-          window.location.reload();
+          alert("Evento deletado!");
+          // Atualize o estado local após excluir o evento
+          setDados((prevData) => prevData.filter((item) => item.idEvento !== id));
         } else {
           console.error("Erro ao deletar evento:", response.status);
         }
       }
     } catch (error) {
-      console.error("Erro ao excluir o usuário:", error);
+      console.error("Erro ao excluir o evento:", error);
     }
   };
 
   const handleConfirmDelete = () => {
-    handleDeleteEvento(dataEdit.id);
+    handleDeleteItem(dataEdit.idEvento);
     onClose();
     setIsDeleteAlertOpen(false);
   };
@@ -139,48 +137,52 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
                   <Th>Data de Inicio</Th>
                   <Th>Data de Término</Th>
                   <Th>Horario de Inicio</Th>
-                  <Th>Horairo de Término</Th>
+                  <Th>Horario de Término</Th>
+                  <Th>Imagem</Th>
                   <Th>Editar</Th>
                   <Th>Excluir</Th>
-                  <Th>Imagem</Th>
                   <Th>Usuários Interessados</Th>
                 </Tr>
               </Thead>
               <Tbody>
-  {dados &&
-    dados.map((item, index) => (
-      <Tr key={index} cursor="pointer">
-        <Td>{item.idEvento}</Td>
-        <Td>{item.nomeEvento}</Td>
-        <Td>{item.descricao}</Td>
-        <Td>{item.dataInicio}</Td>
-        <Td>{item.dataTermino}</Td>
-        <Td>
-          <EditIcon fontSize={20} onClick={() => handleEditItem(item)} />
-        </Td>
-        <Td>
-          <DeleteIcon
-            fontSize={20}
-            onClick={() => handleDeleteItem(item.idEvento)}
-          />
-        </Td>
-        <Td p={0}>
-          <img
-            className="imagemParque"
-            src={item.imagem}
-            alt={`Imagem de ${item.name}`}
-          />
-        </Td>
-        <Td>{item.usuarios.length}</Td>
-      </Tr>
-    ))}
-</Tbody>
+                {dados &&
+                  dados.map((item, index) => (
+                    <Tr key={index} cursor="pointer">
+                      <Td>{item.idEvento}</Td>
+                      <Td>{item.nomeEvento}</Td>
+                      <Td>{item.descricao}</Td>
+                      <Td>{new Date(item.dataInicio).toLocaleDateString()}</Td>
+                      <Td>{new Date(item.dataTermino).toLocaleDateString()}</Td>
+                      <Td>{item.horaInicio}</Td>
+                      <Td>{item.horaTermino}</Td>
+                      <Td p={0}>
+                        <img
+                          className="imagemParque"
+                          src={item.imagem}
+                          alt={`Imagem de ${item.nomeEvento}`}
+                        />
+                      </Td>
+                      <Td>
+                        <EditIcon fontSize={20} onClick={() => handleEditItem(item)} />
+                      </Td>
+                      <Td>
+                        <DeleteIcon
+                          fontSize={20}
+                          onClick={() => {  
+                            setDataEdit(item);
+                            setIsDeleteAlertOpen(true);
+                          }}
+                        />
+                      </Td>
+                      <Td>{item.usuarios.length}</Td>
+                    </Tr>
+                  ))}
+              </Tbody>
             </Table>
           </div>
         </main>
       </div>
 
-      {/* Modal de Edição */}
       <ModalCompEventos
         data={dados}
         setData={setDados}
@@ -189,7 +191,6 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
         onClose={() => onClose()}
       />
 
-      {/* Modal de Confirmação de Exclusão */}
       <AlertDialog
         isOpen={isDeleteAlertOpen}
         leastDestructiveRef={cancelRef}
@@ -215,7 +216,7 @@ function Eventos({ data, handleEditEvento, handleDeleteEvento }) {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialogOverlay>
-      </AlertDialog>
+      </AlertDialog>    
     </>
   );
 }

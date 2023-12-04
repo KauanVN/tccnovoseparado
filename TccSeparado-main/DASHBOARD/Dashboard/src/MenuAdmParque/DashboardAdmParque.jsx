@@ -1,29 +1,36 @@
-import React from 'react'
-import { useState, useEffect } from 'react'
-import 
-{ BsFillArchiveFill, BsFillGrid3X3GapFill, BsPeopleFill, BsFillBellFill, BsTreeFill }
- from 'react-icons/bs'
- import 
- { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, LineChart, Line } 
- from 'recharts';
+import React, { useState, useEffect } from 'react';
+import {
+  BsFillArchiveFill,
+  BsFillGrid3X3GapFill,
+  BsFillBellFill,
+  BsTreeFill,
+} from 'react-icons/bs';
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from 'recharts';
 import SidebarAdmParque from '../SidebarAdmParque';
 import Header from '../Header';
-import '../App.css'
-
-
-
+import '../App.css';
 
 function DashboardAdmParque() {
-  const [openSidebarToggle, setOpenSidebarToggle] = useState(false)
-  var administrador = JSON.parse(localStorage.getItem("administrador"));
+  const [openSidebarToggle, setOpenSidebarToggle] = useState(false);
+  const administrador = JSON.parse(localStorage.getItem('administrador'));
   const [eventos, setEventos] = useState([]);
   const [ativos, setAtivos] = useState(0);
   const [inativos, setInativos] = useState(0);
   const [totalInteressados, setTotalInteressados] = useState(0);
-  const OpenSidebar = () => {
 
-    setOpenSidebarToggle(!openSidebarToggle)
-  }
+  const OpenSidebar = () => {
+    setOpenSidebarToggle(!openSidebarToggle);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -31,33 +38,32 @@ function DashboardAdmParque() {
 
         if (token) {
           const headers = {
-            "Content-type": "application/json; charset=UTF-8",
+            'Content-type': 'application/json; charset=UTF-8',
             Authorization: `Bearer ${token}`,
           };
 
           const response = await fetch(
-            "https://tcc-production-e100.up.railway.app/api/evento/" +
+            'https://tcc-production-e100.up.railway.app/api/evento/' +
               administrador.parque.idLazer,
             {
-              method: "GET",
+              method: 'GET',
               headers: headers,
             }
           );
 
           if (response.status === 200) {
             const data = await response.json();
-            console.log("Dados da resposta: ", data);
             setEventos(data);
           }
         }
       } catch (error) {
-        console.error("Erro ao fazer a solicitação:", error);
+        console.error('Erro ao fazer a solicitação:', error);
       }
     }
 
     fetchData();
   }, []);
-  
+
   useEffect(() => {
     let total = 0;
     eventos.forEach((evento) => {
@@ -72,87 +78,85 @@ function DashboardAdmParque() {
     setAtivos(ativosCount);
     setInativos(inativosCount);
   };
+
   useEffect(() => {
     contarEventos(eventos);
   }, [eventos]);
 
-
-    const data = [
-        {
-          name: 'Ativos',
-          uv: ativos,
-          pv: inativos,
-        },
-      ];
-     
+  const data = [
+    {
+      name: 'Eventos Ativos',
+      ativos: ativos,
+    },
+    {
+      name: 'Eventos Passados',
+      inativos: inativos,
+    },
+  ];
 
   return (
     <>
-    <div className='grid-container'>
-      <Header OpenSidebar={OpenSidebar}/>
-      <SidebarAdmParque openSidebarToggle={openSidebarToggle} OpenSidebar={OpenSidebar}/>
+      <div className='grid-container'>
+        <Header OpenSidebar={OpenSidebar} />
+        <SidebarAdmParque
+          openSidebarToggle={openSidebarToggle}
+          OpenSidebar={OpenSidebar}
+        />
 
-      <main className='main-container'>
+        <main className='main-container'>
           <div className='main-title'>
-              <h3>Dashboard</h3>
+            <h3>Dashboard</h3>
           </div>
-  
+
           <div className='main-cards'>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>Quantidade de Eventos ativos</h3>
-                      <BsFillArchiveFill className='card_icon'/>
-                  </div>
-                  <h1>{ativos}</h1>
+            <div className='card'>
+              <div className='card-inner'>
+                <h3>Eventos Ativos</h3>
+                <BsFillArchiveFill className='card_icon' />
               </div>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>Quantidade de Eventos passados</h3>
-                      <BsFillGrid3X3GapFill className='card_icon'/>
-                  </div>
-                  <h1>{inativos}</h1>
+              <h1>{ativos}</h1>
+            </div>
+            <div className='card'>
+              <div className='card-inner'>
+                <h3>Eventos Passados</h3>
+                <BsFillGrid3X3GapFill className='card_icon' />
               </div>
-              <div className='card'>
-                  <div className='card-inner'>
-                      <h3>Total de Usuarios Interessados <strong>(geral)</strong></h3>
-                      <BsFillGrid3X3GapFill className='card_icon'/>
-                  </div>
-                  <h1>{totalInteressados}</h1>
+              <h1>{inativos}</h1>
+            </div>
+            <div className='card'>
+              <div className='card-inner'>
+                <h3>Total de Interessados</h3>
+                <BsFillBellFill className='card_icon' />
               </div>
+              <h1>{totalInteressados}</h1>
+            </div>
           </div>
-  
+
           <div className='charts'>
-              <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width='100%' height={300}>
               <BarChart
-              width={500}
-              height={500}
-              data={data}
-              margin={{
+                data={data}
+                margin={{
                   top: 10,
                   right: 30,
                   left: 20,
                   bottom: 5,
-              }}
+                }}
               >
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="name" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Bar dataKey="pv" fill="#8884d8" />
-                  <Bar dataKey="uv" fill="#82ca9d" />
-                  </BarChart>
-              </ResponsiveContainer>
-  
-             
-  
+                <CartesianGrid strokeDasharray='3 3' />
+                <XAxis dataKey='name' />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey='ativos' fill='#8884d8' name='Eventos Ativos' />
+                <Bar dataKey='inativos' fill='#82ca9d' name='Eventos Passados' />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
-      </main>
-    </div>
-      
+        </main>
+      </div>
     </>
-    
-  )
+  );
 }
 
-export default DashboardAdmParque
+export default DashboardAdmParque;

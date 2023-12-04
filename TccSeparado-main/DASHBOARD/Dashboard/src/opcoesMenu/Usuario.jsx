@@ -82,9 +82,9 @@ function Usuario({ data, handleEditUsuario, handleDeleteUsuario }) {
           <Thead>
             <Tr>
               <Th>ID</Th>
-              <Th>Emailﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
-              <Th>Status da contaﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
-              <Th p={0}>Excluirﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
+              <Th>Emailﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
+              <Th>Status da contaﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
+              <Th p={0}>Excluirﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤㅤﾠﾠﾠﾠﾠﾠ</Th>
             </Tr>
           </Thead>
           <Tbody>

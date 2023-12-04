@@ -135,6 +135,7 @@ const ModalCompEventos = ({
           if (dataEdit && Object.keys(dataEdit).length > 0) {
             alert("Evento atualizado!");
             onUpdateData(eventId);
+            
           } else {
             alert("Evento criado!");
           }

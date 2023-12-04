@@ -238,13 +238,13 @@ function Solicitacao({ data, handleEditSolicitacao, handleDeleteSolicitacao }) {
         <Table className="tabela">
           <Thead>
             <Tr>
-              <Th>ID</Th>
-              <Th>Email do adm</Th>
-              <Th>Status</Th>
-              <Th>nome do parque</Th>
-              <Th>ID do parque</Th>
-              <Th>aceitar</Th>
-              <Th>recusar</Th>
+              <Th>IDㅤ</Th>
+              <Th>Email do admㅤㅤ</Th>
+              <Th>Statusㅤㅤㅤㅤㅤㅤㅤ</Th>
+              <Th>Nome do parqueㅤㅤㅤㅤㅤㅤ</Th>
+              <Th>ID do parqueㅤㅤ</Th>
+              <Th>Aceitarㅤㅤㅤㅤㅤ</Th>
+              <Th>Recusarㅤㅤㅤㅤㅤ</Th>
             </Tr>
           </Thead>
           <Tbody>
