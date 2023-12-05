@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FaTimes, FaEnvelope, FaLock, FaTree, FaPagelines } from 'react-icons/fa'; // Importe os ícones necessários do FontAwesome
 import Logo from "../img/logoLinkedParkSemFundo.png";
 import '../css/Login.css';
+import swal from 'sweetalert';
 
 export default function SolicitarLogin({ isOpen, setCloseModal }) {
   const [formData, setFormData] = useState({
@@ -57,20 +58,21 @@ export default function SolicitarLogin({ isOpen, setCloseModal }) {
         'Content-type': 'application/json; charset=UTF-8',
       },
     })
-      .then(response => {
-        console.log(response.status)
-        if (response.status === 201) {
-          return alert('ATENÇÃO!\nEsta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login');
-          ;
-        } else {
-          return alert('ATENÇÃO!\nA solicitação falhou tente novamente mais tarde ou verifique se este email ja foi utilizado');
-
-        }
-      })
-      .catch(error => {
-        console.error("Erro durante a requisição:", error);
-        alert("Erro");
-      });
+    .then(response => {
+      console.log(response.status)
+      if (response.status === 201) {
+        // Utilize o SweetAlert para sucesso
+        swal('ATENÇÃO!', 'Esta solicitação é para obter a sua área do administrador. Por favor, cheque seu e-mail e aguarde para ter seu login', 'success');
+      } else {
+        // Utilize o SweetAlert para falha
+        swal('ATENÇÃO!', 'A solicitação falhou. Tente novamente mais tarde ou verifique se este email já foi utilizado.', 'error');
+      }
+    })
+    .catch(error => {
+      console.error("Erro durante a requisição:", error);
+      // Utilize o SweetAlert para o erro
+      swal('Erro!', 'Erro durante a requisição.', 'error');
+    });
   }
 
   const handleInputChange = (event) => {

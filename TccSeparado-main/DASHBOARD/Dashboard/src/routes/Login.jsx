@@ -44,7 +44,10 @@ export default function Login({ isOpen, setCloseLogin }) {
       if (response.status === 200) {
         return response.json();
       } else {
-        alert("Usuário não encontrado!");
+        // Utilize o SweetAlert para exibir o erro
+        swal("Usuário não encontrado!", {
+          icon: "error",
+        });
       }
     })
     .then(data => {
@@ -52,7 +55,10 @@ export default function Login({ isOpen, setCloseLogin }) {
         console.log(data);
         localStorage.setItem('administrador', JSON.stringify(data));
         console.log(localStorage.getItem("senha"))
-        alert("Usuário encontrado!");
+        // Utilize o SweetAlert para sucesso
+        swal("Usuário encontrado!", {
+          icon: "success",
+        });
         if (data.select.role === "MANAGER") {
           navigate("/dashboard");
         } else {
@@ -63,7 +69,10 @@ export default function Login({ isOpen, setCloseLogin }) {
     })
     .catch(error => {
       console.error("Erro durante a requisição:", error);
-      alert("Erro");
+      // Utilize o SweetAlert para o erro
+      swal("Erro durante a requisição!", {
+        icon: "error",
+      });
     });
   }
 

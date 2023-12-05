@@ -84,7 +84,6 @@ function Usuario({ data, handleEditUsuario, handleDeleteUsuario }) {
               <Th>ID</Th>
               <Th>Emailﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
               <Th>Status da contaﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠﾠ</Th>
-              <Th p={0}>Excluirﾠﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤﾠﾠﾠﾠﾠﾠﾠﾠㅤㅤㅤㅤﾠﾠﾠﾠﾠﾠ</Th>
             </Tr>
           </Thead>
           <Tbody>
@@ -95,13 +94,6 @@ function Usuario({ data, handleEditUsuario, handleDeleteUsuario }) {
                 {usuario.accountNonExpired
                   ? "Conta Expirada: Não"
                   : "Conta Expirada: Sim"}
-                <Td p={0}>
-                  <DeleteIcon
-                    fontSize={20}
-                    onClick={() => handleDeleteUsuario(usuario.idUsuario)}
-                    data-email={usuario.email}
-                  />
-                </Td>
               </Tr>
             ))}
           </Tbody>

@@ -19,6 +19,7 @@ import {
   Progress,  // Adicionado para a barra de progresso
 } from '@chakra-ui/react';
 import { uploadImage } from './firebaseService';
+import Swal from 'sweetalert'; // Importe o SweetAlert
 
 const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing }) => {
   const [idLazer, setIdLazer] = useState(dataEdit.idLazer || '');
@@ -205,11 +206,15 @@ const ModalCompParque = ({ data, dataEdit, isOpen, onClose, isEditing }) => {
         });
 
         if (response.status === 201) {
-          console.log('Parque cadastrado com sucesso!');
+          Swal('Sucesso!', 'Parque cadastrado com sucesso!', 'success')
+            .then(() => {
+              window.location.reload();
+              onClose();
+            });
           window.location.reload();
           onClose();
         } else {
-          console.error('Erro ao cadastrar parque:', response.status);
+          Swal('Erro!', `Erro ao cadastrado parque: ${response.status}`, 'error');
         }
       }
     } catch (error) {

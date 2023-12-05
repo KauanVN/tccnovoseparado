@@ -21,6 +21,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { FaTimes } from "react-icons/fa";
 import { uploadImage } from '../opcoesMenu/FirebaseService';
+import swal from 'sweetalert';
 
 const ModalCompEventos = ({
   data,
@@ -90,28 +91,28 @@ const ModalCompEventos = ({
       setValidationError("Por favor, preencha todos os campos corretamente.");
       return;
     }
-
+  
     try {
       const token = await administrador.token;
       const idLazer = await administrador.parque.idLazer;
       console.log(imagemState);
-
+  
       if (token) {
         const headers = {
           "Content-type": "application/json; charset=UTF-8",
           Authorization: `Bearer ${token}`,
         };
-
+  
         let endpoint = 'https://tcc-production-e100.up.railway.app/api/evento';
         let method = 'POST';
         let eventId = '';
-
+  
         if (dataEdit && Object.keys(dataEdit).length > 0) {
           eventId = dataEdit.id;
           endpoint += `/${eventId}`;
           method = 'PUT';
         }
-
+  
         const response = await fetch(endpoint, {
           method: method,
           headers: headers,
@@ -130,16 +131,20 @@ const ModalCompEventos = ({
             },
           }),
         });
-
+  
         if (response.status === 201 || response.status === 200) {
           if (dataEdit && Object.keys(dataEdit).length > 0) {
-            alert("Evento atualizado!");
-            onUpdateData(eventId);
-            
+            swal("Evento atualizado!", {
+              icon: "success",
+            }).then(() => {
+              onUpdateData(eventId);
+              onClose();
+            });
           } else {
-            alert("Evento criado!");
+            swal("Evento criado!", {
+              icon: "success",
+            }).then(onClose);
           }
-          onClose();
         } else {
           console.error("Erro ao cadastrar evento:", response.status);
         }
@@ -148,6 +153,7 @@ const ModalCompEventos = ({
       console.error("Erro ao excluir o usuário:", error);
     }
   };
+  
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">

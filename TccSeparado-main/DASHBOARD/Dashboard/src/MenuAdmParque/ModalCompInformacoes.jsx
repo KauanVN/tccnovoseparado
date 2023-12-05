@@ -17,6 +17,7 @@ import {
   Select,
 } from "@chakra-ui/react";
 import { FaTimes } from "react-icons/fa";
+import swal from 'sweetalert';
 
 const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
   // Defina os estados necessários
@@ -76,11 +77,15 @@ const ModalCompInformacoes = ({ dataEdit, isOpen, onClose, onUpdateData }) => {
 
         if (response.status === 200) {
          console.log(titulo)
-          alert("Parque atualizado com sucesso!");
+         swal('Sucesso!', 'Parque atualizado com sucesso!', 'success')
+         .then(() => {
+           console.log(titulo);
+           login();
+         });
           login()
      
         } else {
-          console.error("Erro ao cadastrar parque:", response.status);
+          swal('Erro!', `Erro ao cadastrar parque: ${response.status}`, 'error');
         }
       }
     } catch (error) {
